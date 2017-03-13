@@ -7,7 +7,7 @@
         }
 		
 		label{
-			font-size: 12px!important;
+			font-size: 10px!important;
 		}
     </style>   
      <!-- Start content -->
@@ -229,12 +229,11 @@
                         <h4 class="modal-title" id="custom-width-modalLabel">Add Project</h4>
                     </div>
                     <div class="modal-body">
-                        <div class="m-t-20">
-                            <h4 class="{{class}}">{{message}}</h4>                        
-                    <form name="opamgForm" ng-show="switchForm1">  
-                            <div id="map_canvas" style="height: 500px;position: relative;/* overflow: hidden; */"></div>
-                            <div class="form-group col-sm-3">
-                                    <label>Latitude</label>
+                        <div class="">
+                            <h4 class="{{class}}">{{message}}</h4>  
+					<form style="overflow: hidden;" ng-show="switchForm1">
+						<div class="form-group col-sm-3">
+                                    <label>Latitude(D, M, S)</label>
                                     <input 
                                             class="form-control" 
                                             type="text" 
@@ -251,7 +250,7 @@
                                     </div>-->
                             </div>
                             <div class="form-group col-sm-3">
-                                    <label>Longitude</label>
+                                    <label>Longitude(D, M, S)</label>
                                     <input 
                                             class="form-control" 
                                             type="text" 
@@ -300,106 +299,94 @@
                                     <!--<div ng-messages="opamgForm.easting.$error" ng-if="opamgForm.easting.$dirty" >
                                             <div ng-message="required" class="error">This field is required</div>
                                     </div>-->
-                            </div>									
-                            <!--<div class="form-group">
-                                    <label>Layer Library</label>
-                                    <select class="form-control" ng-model="measure.layer_name"  name="layer_name" required>
-                                            <option ng-repeat="val in layerNames" value="{{val}}">{{val}}</option>
-                                    </select>
-
-                            </div>
-                            <div class="form-group col-sm-4">
-                                    <label>Back Site</label>
-                                    <input 
-                                            class="form-control" 
-                                            type="text" 
-                                            placeholder="Back Site"
-                                            ng-model="measure.back_site"
-                                            name="back_site"
-                                            autocomplete="off"
-                                            required
-                                            ng-blur="calHight();"
-
-                                    >
-                            </div>
-                            <div class="form-group col-sm-4">
-                                    <label>Intermediate Site</label>
-                                    <input 
-                                            class="form-control" 
-                                            type="text" 
-                                            placeholder="Intermediate Site"
-                                            ng-model="measure.intermediate_site"
-                                            name="intermediate_site"
-                                            autocomplete="off"
-                                            required
-                                            ng-blur="calReduceLevel();calHight();"
-                                    >
-                            </div>
-                            <div class="form-group col-sm-4">
-                                    <label>Fore Site</label>
-                                    <input 
-                                            class="form-control" 
-                                            type="text" 
-                                            placeholder="Fore Site"
-                                            ng-model="measure.fore_site"
-                                            name="fore_site"
-                                            autocomplete="off"
-                                            required
-                                            ng-blur="calReduceLevel()"
-                                    >
-                            </div>-->
+                            </div>	
+					</form>
+                    <form name="opamgForm" ng-show="switchForm1">  
+                            <div id="map_canvas" style="height: 500px;position: relative;/* overflow: hidden; */"></div>
+                            
                             <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Close</button>
-                            <!--<button type="button" class="btn btn-primary waves-effect waves-light" ng-disabled="opamgForm.$invalid" ng-click="switchProject()">Next</button>-->
+                            
                     </form>
-                    <form name="opamgForm1" ng-show="switchForm2"> 
+                    <form name="opamgForm1" ng-show="switchForm2">  <!---->
+							<div class="text-center">
+								<label>USING EQUIPMENTS LIST & FEUTURES</label>
+							</div>
+							<div class="form-group col-md-12">
+								<select class="form-control" ng-model="measure.equipment" ng-change="readEquipment(measure.equipment)">
+									<option ng-repeat="val in equipmentList" value="{{val}}">{{val.model_number}}</option>
+								</select>
+							</div>
                             <div class="form-group col-md-4">
-                                    <label>ADJ</label>
                                     <input 
                                             class="form-control" 
                                             type="text" 
-                                            placeholder="ADJ"
-                                            ng-model="measure.adj"
-                                            name="adj"
+                                            placeholder="MODLE NO"
+                                            ng-model="equipment.model_number"
+                                            name="hight_of_instrument"
                                             autocomplete="off"
-
-                                            ng-blur="calReduceLevel()"
+											ng-disabled="true"
                                     >
-                                    <!--<div ng-messages="opamgForm.adj.$error" ng-if="opamgForm.adj.$dirty" >
+                                    <!--<div ng-messages="opamgForm.hight_of_instrument.$error" ng-if="opamgForm.hight_of_instrument.$dirty" >
                                             <div ng-message="required" class="error">This field is required</div>
                                     </div>-->
                             </div>
                             <div class="form-group col-md-4">
-                                    <label>ADJ RL</label>
                                     <input 
                                             class="form-control" 
                                             type="text" 
-                                            placeholder="ADJ RL"
-                                            ng-model="measure.adj_rl"
-                                            name="adj_rl"
+                                            placeholder="LAST CALIBRATION SERVIVE CENTER"
+                                            ng-model="equipment.last_calibration_service_center"
+                                            name="hight_of_instrument"
                                             autocomplete="off"
-
+											ng-disabled="true"
                                     >
-                                    <!--<div ng-messages="opamgForm.adj_rl.$error" ng-if="opamgForm.adj_rl.$dirty" >
+                                    <!--<div ng-messages="opamgForm.hight_of_instrument.$error" ng-if="opamgForm.hight_of_instrument.$dirty" >
                                             <div ng-message="required" class="error">This field is required</div>
                                     </div>-->
                             </div>
                             <div class="form-group col-md-4">
-                                    <label>Reduce Level</label>
                                     <input 
                                             class="form-control" 
                                             type="text" 
-                                            placeholder="Reduce Level"
-                                            ng-model="measure.reduce_level"
-                                            name="reduce_level"
+                                            placeholder="EXPIRY DATE"
+                                            ng-model="equipment.expiry_date"
+                                            name="hight_of_instrument"
                                             autocomplete="off"
-
-                                            ng-blur="calHight();"
+											ng-disabled="true"
                                     >
-                                    <!--<div ng-messages="opamgForm.reduce_level.$error" ng-if="opamgForm.reduce_level.$dirty" >
+                                    <!--<div ng-messages="opamgForm.hight_of_instrument.$error" ng-if="opamgForm.hight_of_instrument.$dirty" >
                                             <div ng-message="required" class="error">This field is required</div>
                                     </div>-->
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-6">
+                                    <input 
+                                            class="form-control" 
+                                            type="text" 
+                                            placeholder="LEAST COUNT"
+                                            ng-model="equipment.least_count"
+                                            name="hight_of_instrument"
+                                            autocomplete="off"
+											ng-disabled="true"
+                                    >
+                                    <!--<div ng-messages="opamgForm.hight_of_instrument.$error" ng-if="opamgForm.hight_of_instrument.$dirty" >
+                                            <div ng-message="required" class="error">This field is required</div>
+                                    </div>-->
+                            </div>
+                            <div class="form-group col-md-6">
+                                    <input 
+                                            class="form-control" 
+                                            type="text" 
+                                            placeholder="OWNER / INCHARGE"
+                                            ng-model="equipment.owner"
+                                            name="hight_of_instrument"
+                                            autocomplete="off"
+											ng-disabled="true"
+                                    >
+                                    <!--<div ng-messages="opamgForm.hight_of_instrument.$error" ng-if="opamgForm.hight_of_instrument.$dirty" >
+                                            <div ng-message="required" class="error">This field is required</div>
+                                    </div>-->
+                            </div>
+							<div class="form-group col-md-4">
                                     <label>Hight of Instrument</label>
                                     <input 
                                             class="form-control" 
@@ -413,68 +400,39 @@
                                     <!--<div ng-messages="opamgForm.hight_of_instrument.$error" ng-if="opamgForm.hight_of_instrument.$dirty" >
                                             <div ng-message="required" class="error">This field is required</div>
                                     </div>-->
-                            </div>									
+                            </div>	
                             <div class="form-group col-md-4">
-                                    <label>Offset Length of Map</label>
+									
+                                    <label>ADJ RL</label>
                                     <input 
                                             class="form-control" 
                                             type="text" 
-                                            placeholder="Offset Length of Map"
-                                            ng-model="measure.offset_length"
-                                            name="offset_length"
-                                            autocomplete="off"
-
-                                            disabled
-                                    >
-                                    <!--<div ng-messages="opamgForm.offset_length.$error" ng-if="opamgForm.offset_length.$dirty" >
-                                            <div ng-message="required" class="error">This field is required</div>
-                                    </div>-->
-                            </div>
-                            <div class="form-group col-md-4">
-                                    <label>Measurement offset</label>
-                                    <input 
-                                            class="form-control" 
-                                            type="text" 
-                                            placeholder="Measurement offset"
-                                            ng-model="measure.measurement_offset"
-                                            name="offset_length"
-                                            autocomplete="off"
-                                    >
-                                    <!--<div ng-messages="opamgForm.offset_length.$error" ng-if="opamgForm.offset_length.$dirty" >
-                                            <div ng-message="required" class="error">This field is required</div>
-                                    </div>-->
-                            </div>
-                            <div class="form-group col-md-4">
-                                    <label>Chainage by Map</label>
-                                    <input 
-                                            class="form-control" 
-                                            type="text" 
-                                            placeholder="Chainage by Map"
-                                            ng-model="measure.ch"
-                                            name="ch"
+                                            placeholder="ADJ RL"
+                                            ng-model="measure.adj_rl"
+                                            name="adj_rl"
                                             autocomplete="off"
 
                                     >
-                                    <!--<div ng-messages="opamgForm.ch.$error" ng-if="opamgForm.ch.$dirty" >
+                                    <!--<div ng-messages="opamgForm.adj_rl.$error" ng-if="opamgForm.adj_rl.$dirty" >
                                             <div ng-message="required" class="error">This field is required</div>
                                     </div>-->
                             </div>	
                             <div class="form-group col-md-4">
-                                    <label>Measurement by chainage</label>
+                                    <label>TBM RL</label>
                                     <input 
                                             class="form-control" 
                                             type="text" 
-                                            placeholder="Measurement by chainage"
-                                            ng-model="measure.measurement_ch"
-                                            name="ch"
+                                            placeholder="ADJ RL"
+                                            ng-model="measure.adj_rl"
+                                            name="adj_rl"
                                             autocomplete="off"
 
                                     >
-                                    <!--<div ng-messages="opamgForm.ch.$error" ng-if="opamgForm.ch.$dirty" >
+                                    <!--<div ng-messages="opamgForm.adj_rl.$error" ng-if="opamgForm.adj_rl.$dirty" >
                                             <div ng-message="required" class="error">This field is required</div>
                                     </div>-->
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-12">
                                     <label>Remarks</label>
                                     <input 
                                             class="form-control" 
