@@ -228,6 +228,16 @@ app.factory( "measurements", function( $http, $rootScope ){
     }
 });
 
+app.filter('range', function () {
+  return function (input, total) {
+    total = parseInt(total);
+    for (var i = 0; i < total; i++) {
+      input.push(i);
+    }
+    return input;
+  }; //filter range
+});
+
 app.controller("loginController", function( $scope, login, $location ){
     $scope.login = {};
 	

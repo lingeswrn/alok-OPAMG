@@ -25,6 +25,9 @@ checked_reduce_level
 remarks
 adjustment_error
 tbm_rl
+bs_angle
+is_angle
+fs_angle
 close_photograph
 location_photograph
 screen_shot
@@ -40,3 +43,11 @@ type
 deg
 min
 sec
+
+staff_readings
+
+id
+measurment_id
+back_site
+intermediate_site
+forward_site

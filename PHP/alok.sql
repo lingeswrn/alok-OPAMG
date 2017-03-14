@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.1.14
+-- version 4.5.5.1
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 12, 2017 at 05:16 PM
--- Server version: 5.6.17
--- PHP Version: 5.5.12
+-- Generation Time: Mar 14, 2017 at 01:53 PM
+-- Server version: 5.7.11
+-- PHP Version: 5.6.19
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -14,7 +14,7 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `alok`
@@ -26,8 +26,8 @@ SET time_zone = "+00:00";
 -- Table structure for table `address`
 --
 
-CREATE TABLE IF NOT EXISTS `address` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `address` (
+  `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `address_type` enum('residencial','corporate') NOT NULL,
   `address` varchar(255) NOT NULL,
@@ -35,10 +35,8 @@ CREATE TABLE IF NOT EXISTS `address` (
   `pincode` varchar(255) NOT NULL,
   `district` varchar(255) NOT NULL,
   `state` varchar(255) NOT NULL,
-  `country` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
+  `country` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `address`
@@ -62,17 +60,16 @@ INSERT INTO `address` (`id`, `user_id`, `address_type`, `address`, `city`, `pinc
 -- Table structure for table `equipments_list`
 --
 
-CREATE TABLE IF NOT EXISTS `equipments_list` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `equipments_list` (
+  `id` int(11) NOT NULL,
   `model_number` varchar(255) NOT NULL,
   `last_calibration_service_center` varchar(255) NOT NULL,
   `expiry_date` date NOT NULL,
   `least_count` varchar(255) NOT NULL,
   `owner` varchar(255) NOT NULL,
   `status` tinyint(4) NOT NULL DEFAULT '1',
-  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `equipments_list`
@@ -84,19 +81,33 @@ INSERT INTO `equipments_list` (`id`, `model_number`, `last_calibration_service_c
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `gps_coordinates`
+--
+
+CREATE TABLE `gps_coordinates` (
+  `id` int(11) NOT NULL,
+  `measurment_id` int(11) NOT NULL,
+  `type` enum('lat','lng') NOT NULL,
+  `deg` varchar(255) NOT NULL,
+  `min` varchar(255) NOT NULL,
+  `sec` int(255) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `layers`
 --
 
-CREATE TABLE IF NOT EXISTS `layers` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `layers` (
+  `id` int(11) NOT NULL,
   `symble` varchar(255) DEFAULT NULL,
   `code` varchar(255) NOT NULL,
   `category` varchar(255) NOT NULL,
   `description` varchar(255) NOT NULL,
   `status` tinyint(4) NOT NULL DEFAULT '1',
-  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1002 ;
+  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `layers`
@@ -1112,8 +1123,55 @@ INSERT INTO `layers` (`id`, `symble`, `code`, `category`, `description`, `status
 -- Table structure for table `measurement`
 --
 
-CREATE TABLE IF NOT EXISTS `measurement` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `measurement` (
+  `id` int(11) NOT NULL,
+  `project_id` int(11) NOT NULL,
+  `equipement_id` int(11) NOT NULL,
+  `layer_code` varchar(150) NOT NULL,
+  `latitude` float(8,3) NOT NULL,
+  `longitude` float(8,3) NOT NULL,
+  `utm_zone` int(11) NOT NULL,
+  `utm_easting` float(12,3) NOT NULL,
+  `utm_northing` float(12,3) NOT NULL,
+  `el` varchar(255) NOT NULL,
+  `mapping_ch` float(7,3) NOT NULL,
+  `ch_by_auto_level` float(7,3) NOT NULL,
+  `measurment_ch` float(7,3) NOT NULL,
+  `bs_offset` float(10,3) NOT NULL,
+  `is_offset` float(10,3) NOT NULL,
+  `fs_offset` float(10,3) NOT NULL,
+  `n_offset` float(7,3) NOT NULL,
+  `e_offset` float(7,3) NOT NULL,
+  `l_section_offset` varchar(255) NOT NULL,
+  `x_section_offset` varchar(255) NOT NULL,
+  `rise_plus` float(7,3) NOT NULL,
+  `fall_minus` float(7,3) NOT NULL,
+  `avg_hight_of_instrument_from_gl` float(7,3) NOT NULL,
+  `hight_of_instrument` float(7,3) NOT NULL,
+  `calculated_reduce_rl` float(7,3) NOT NULL,
+  `checked_reduce_level` float(7,3) NOT NULL,
+  `remarks` varchar(255) NOT NULL,
+  `adjustment_error` float(7,3) NOT NULL,
+  `tbm_rl` float(7,3) NOT NULL,
+  `bs_angle` float(7,3) NOT NULL,
+  `is_angle` float(7,3) NOT NULL,
+  `fs_angle` float(7,3) NOT NULL,
+  `close_photograph` varchar(255) NOT NULL,
+  `location_photograph` varchar(255) NOT NULL,
+  `screen_shot` varchar(255) NOT NULL,
+  `other_photograph` varchar(255) NOT NULL,
+  `status` tinyint(4) NOT NULL DEFAULT '1',
+  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `measurement_old`
+--
+
+CREATE TABLE `measurement_old` (
+  `id` int(11) NOT NULL,
   `project_id` int(11) NOT NULL,
   `back_site` float(10,3) NOT NULL,
   `intermediate_site` float(10,3) NOT NULL,
@@ -1133,15 +1191,14 @@ CREATE TABLE IF NOT EXISTS `measurement` (
   `lattitude` float(12,5) NOT NULL,
   `longitude` float(12,5) NOT NULL,
   `status` tinyint(4) NOT NULL DEFAULT '1',
-  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=45 ;
+  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `measurement`
+-- Dumping data for table `measurement_old`
 --
 
-INSERT INTO `measurement` (`id`, `project_id`, `back_site`, `intermediate_site`, `fore_site`, `adj`, `adj_rl`, `northing`, `easting`, `reduce_level`, `hight_of_instrument`, `offset_length`, `measurement_offset`, `ch`, `measurement_ch`, `layer_name`, `remarks`, `lattitude`, `longitude`, `status`, `created_date`) VALUES
+INSERT INTO `measurement_old` (`id`, `project_id`, `back_site`, `intermediate_site`, `fore_site`, `adj`, `adj_rl`, `northing`, `easting`, `reduce_level`, `hight_of_instrument`, `offset_length`, `measurement_offset`, `ch`, `measurement_ch`, `layer_name`, `remarks`, `lattitude`, `longitude`, `status`, `created_date`) VALUES
 (1, 1, 0.000, 0.000, 0.000, 0.000, 0.000, 110.912, 188.671, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 'ELECTRICAL POLE 220 V', '', 23.35520, 85.31856, 1, '2017-03-05 17:54:45'),
 (2, 1, 0.000, 0.000, 0.000, 0.000, 0.000, 110.924, 188.669, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 'ELECTRICAL POLE 220 V', '', 23.33951, 85.31627, 1, '2017-03-05 17:54:57'),
 (3, 1, 0.000, 0.000, 0.000, 0.000, 0.000, 110.916, 188.683, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 'ELECTRICAL POLE 220 V', '', 23.34928, 85.33550, 1, '2017-03-05 17:55:10'),
@@ -1193,8 +1250,8 @@ INSERT INTO `measurement` (`id`, `project_id`, `back_site`, `intermediate_site`,
 -- Table structure for table `projects`
 --
 
-CREATE TABLE IF NOT EXISTS `projects` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `projects` (
+  `id` int(11) NOT NULL,
   `_from` varchar(255) NOT NULL,
   `_to` varchar(255) NOT NULL,
   `project_name` varchar(255) NOT NULL,
@@ -1206,9 +1263,8 @@ CREATE TABLE IF NOT EXISTS `projects` (
   `user_id` int(11) NOT NULL,
   `status` tinyint(4) NOT NULL DEFAULT '1',
   `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
+  `updated_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `projects`
@@ -1230,12 +1286,11 @@ INSERT INTO `projects` (`id`, `_from`, `_to`, `project_name`, `company_name`, `c
 -- Table structure for table `roles`
 --
 
-CREATE TABLE IF NOT EXISTS `roles` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `roles` (
+  `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
+  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `roles`
@@ -1251,11 +1306,25 @@ INSERT INTO `roles` (`id`, `name`, `created_date`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `staff_readings`
+--
+
+CREATE TABLE `staff_readings` (
+  `id` int(11) NOT NULL,
+  `measurment_id` int(11) NOT NULL,
+  `back_site` float(7,3) NOT NULL,
+  `intermediate_site` float(7,3) NOT NULL,
+  `forward_site` float(7,3) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `mobile` varchar(255) NOT NULL,
   `email_id` varchar(255) NOT NULL,
@@ -1264,9 +1333,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `id_no` varchar(255) NOT NULL,
   `user_role` varchar(255) NOT NULL,
   `status` tinyint(4) NOT NULL DEFAULT '0',
-  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
+  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `users`
@@ -1280,6 +1348,128 @@ INSERT INTO `users` (`id`, `name`, `mobile`, `email_id`, `password`, `emp_id`, `
 (5, 'alok', '9560147744', 'alok.deepak15@gmail.com', 'e10adc3949ba59abbe56e057f20f883e', '01', '01', 'officer', 3, '2017-03-06 05:32:27'),
 (6, 'alok', '9560147733', 'alok_deepak15@yahoo.co.in', 'e10adc3949ba59abbe56e057f20f883e', '02', '02', 'officer', 3, '2017-03-06 06:44:43');
 
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `address`
+--
+ALTER TABLE `address`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `equipments_list`
+--
+ALTER TABLE `equipments_list`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `gps_coordinates`
+--
+ALTER TABLE `gps_coordinates`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `measurment_id` (`measurment_id`);
+
+--
+-- Indexes for table `layers`
+--
+ALTER TABLE `layers`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `measurement`
+--
+ALTER TABLE `measurement`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `equipement_id` (`equipement_id`);
+
+--
+-- Indexes for table `measurement_old`
+--
+ALTER TABLE `measurement_old`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `projects`
+--
+ALTER TABLE `projects`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `roles`
+--
+ALTER TABLE `roles`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `staff_readings`
+--
+ALTER TABLE `staff_readings`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `measurment_id` (`measurment_id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `address`
+--
+ALTER TABLE `address`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+--
+-- AUTO_INCREMENT for table `equipments_list`
+--
+ALTER TABLE `equipments_list`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT for table `gps_coordinates`
+--
+ALTER TABLE `gps_coordinates`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `layers`
+--
+ALTER TABLE `layers`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1002;
+--
+-- AUTO_INCREMENT for table `measurement`
+--
+ALTER TABLE `measurement`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `measurement_old`
+--
+ALTER TABLE `measurement_old`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+--
+-- AUTO_INCREMENT for table `projects`
+--
+ALTER TABLE `projects`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+--
+-- AUTO_INCREMENT for table `roles`
+--
+ALTER TABLE `roles`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+--
+-- AUTO_INCREMENT for table `staff_readings`
+--
+ALTER TABLE `staff_readings`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

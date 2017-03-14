@@ -5,9 +5,12 @@ app.controller("projectsController", function( $scope, project , $location, meas
     $scope.previousData = {};
     $scope.mappingLayer = {};
     $scope.equipent = {};
+	$scope.numbers = ["1"];
 	
 	$scope.switchForm1 = true;
 	$scope.switchForm2 = false;
+	$scope.addMeasurementHolder = false;
+	$scope.addMeasurementListHolder = true;
 		
     $scope.measure.back_site = 0;
     $scope.measure.intermediate_site = 0;
@@ -150,7 +153,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
 			$scope.$apply();
 			map.panTo(mapEvent.latLng);
 		});
-                
+        /*         
                 var contentString = "<form name='opamgForm'>"				
 				contentString += "<div class='form-group col-sm-3'><label>Mapping CH</label><input autocomplete='off' class='form-control' name='intermediate_site' ng-model='measure.ch' placeholder='Mapping CH' required></div>"
 				contentString += "<div class='form-group col-sm-3'><label>Measurment CH</label><input autocomplete='off' class='form-control' name='intermediate_site' ng-model='measure.measurement_ch' placeholder='Intermediate Site' required></div>"
@@ -168,18 +171,19 @@ app.controller("projectsController", function( $scope, project , $location, meas
 				contentString += "</form>";
 
                     var infowindow = new google.maps.InfoWindow();
-                     /*marker.addListener('click', function() {
-                    infowindow.open(map, marker);
-                  }); */
-				  
+                  */    
 				google.maps.event.addListener(
                     marker,
                     'click', (function(marker, $scope) {
                         return function() {
-                            var compiled = $compile(contentString)($scope);
+                            /* var compiled = $compile(contentString)($scope);
                             $scope.$apply();
 							infowindow.setContent(compiled[0]);
-                            infowindow.open(map, marker);
+                            infowindow.open(map, marker); */
+							alert();
+							$scope.switchForm1 = false;
+							$scope.switchForm2 = true;
+							$scope.$apply();
                         };
                     })(marker, $scope)
                 );
@@ -188,25 +192,12 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		  // Browser doesn't support Geolocation
 		  //handleLocationError(false, infoWindow, map.getCenter());
 		}
-	}
-	$scope.project = function (latLng) {
-        var siny = Math.sin(latLng.lat() * Math.PI / 180);
-
-        // Truncating to 0.9999 effectively limits latitude to 89.189. This is
-        // about a third of a tile past the edge of the world tile.
-        siny = Math.min(Math.max(siny, -0.9999), 0.9999);
-
-        return new google.maps.Point(
-            256 * (0.5 + latLng.lng() / 360),
-            256 * (0.5 - Math.log((1 + siny) / (1 - siny)) / (4 * Math.PI)));
-    }
-    
+	}    
     
 	$scope.addBasic = function( id ){
 		$scope.measure.back_site = 0;
 		$scope.measure.intermediate_site = 0;
 		$scope.measure.fore_site = 0;
-		$scope.measure.adj = 0;
 		$scope.measure.adj_rl = 0;
 		$scope.measure.reduce_level = 0;
 		$scope.measure.northing = 0;
@@ -216,7 +207,10 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		$scope.switchForm2 = false;
 		
 		$scope.project_id = id;
-		$('#add-basic-modal').modal();
+		
+		$scope.addMeasurementHolder = true;
+		$scope.addMeasurementListHolder = false;
+		
 		$scope.loadMeasurements( id );
         getGeolocation()    
 	}
@@ -228,11 +222,11 @@ app.controller("projectsController", function( $scope, project , $location, meas
         $scope.measure.id = id;
         measurements.commonFun( $scope.measure ).then( function( response ){            
             if( response.data.data.previous == null ){
-                $scope.previousData.hight_of_instrument = 0;
-                $scope.previousData.reduce_level = 0;
-                $scope.previousData.northing = 0;
-                $scope.previousData.easting = 0;
-                $scope.previousData.ch = 0;
+                $scope.measure.ch = 0;
+                $scope.measure.measurement_ch = 0;
+                $scope.measure.gps_offset_length = 0;
+                $scope.measure.n_offset = 0;
+                $scope.measure.e_offset = 0;
             }else{
                 $scope.previousData = response.data.data.previous;
                 $scope.measurementList = response.data.data.list;
@@ -283,7 +277,9 @@ app.controller("projectsController", function( $scope, project , $location, meas
     };
     
     $scope.addMeasurement = function(){
-        $scope.measure.action = "add";
+		$scope.measure.layer = $scope.layerString.title;
+		console.log($scope.measure)
+        /* $scope.measure.action = "add";
         $scope.measure.id = $scope.project_id;
         $scope.measure.updatedDate = new Date();
         measurements.commonFun( $scope.measure ).then( function( response ){
@@ -294,11 +290,12 @@ app.controller("projectsController", function( $scope, project , $location, meas
 				$scope.loadMeasurements( $scope.project_id );
 			}else{
 				$scope.measure = {};
-				$('#add-basic-modal').modal('hide');
+				$scope.addMeasurementHolder = false;
+				$scope.addMeasurementListHolder = true;
 				$scope.loadMeasurements( $scope.project_id );
 			}
             $scope.project_list();
-        });
+        }); */
     };
 	$scope.switchProject = function(){
 		/* $scope.measure.layer_name = $('#layer').val();
@@ -334,6 +331,13 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		$scope.equipment.expiry_date = data.expiry_date;
 		$scope.equipment.owner = data.owner;
 		console.log($scope.equipment)
+	}
+	
+	
+	$scope.getNumber = function(num) {
+		$scope.numbers = [];
+		for( i=0; i< num; i++)
+			$scope.numbers.push(i)
 	}
 	
 	function DDtoDMS(){
@@ -489,7 +493,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
 	//document.getElementById("UTMeBox1").value = Math.round(10*(x))/10;
 	//document.getElementById("UTMnBox1").value = Math.round(10*y)/10;
 	
-	return {'northing': (10*(x)/10).toFixed(3), 'easting': (10*(y)/10).toFixed(3), 'latitude':{'D': Math.floor(ydd), 'M': ym, 'S': Math.floor(1000*ys)/1000} , 'longitude':{'D': Math.floor(xdd), 'M': xm, 'S': Math.floor(1000*xs)/1000} };
+	return {'northing': (10*(x)/10).toFixed(3), 'easting': (10*(y)/10).toFixed(3), 'zone': utmz, 'latitude':{'D': Math.floor(ydd), 'M': ym, 'S': Math.floor(1000*ys)/1000} , 'longitude':{'D': Math.floor(xdd), 'M': xm, 'S': Math.floor(1000*xs)/1000} };
 	
 				
 }//close Geog to UTM
