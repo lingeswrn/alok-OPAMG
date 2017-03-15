@@ -12,16 +12,6 @@ app.controller("projectsController", function( $scope, project , $location, meas
 	$scope.addMeasurementHolder = false;
 	$scope.addMeasurementListHolder = true;
 		
-    $scope.measure.back_site = 0;
-    $scope.measure.intermediate_site = 0;
-    $scope.measure.fore_site = 0;
-    $scope.measure.adj = 0;
-    $scope.measure.adj_rl = 0;
-    $scope.measure.reduce_level = 0;
-    $scope.measure.northing = 0;
-    $scope.measure.easting = 0;
-    
-		
     //$scope.layerNames = ['ELECTRICAL POLE 220 V', 'ELECTRICAL POLE 440 V', 'ELECTRICAL POLE 11 KV', 'ELECTRICAL POLE 33 KV', 'ELECTRICAL POLE 110 KV', 'ELECTRICAL POLE 220 KV', 'TRANSFERMER', 'N…..NO OF SAVE DATA IN LIST'];	
     $scope.listLayers = function(){ 
         $scope.mappingLayer.action = "list";
@@ -152,26 +142,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
 			$scope.measure.northing = $scope.value.northing;
 			$scope.$apply();
 			map.panTo(mapEvent.latLng);
-		});
-        /*         
-                var contentString = "<form name='opamgForm'>"				
-				contentString += "<div class='form-group col-sm-3'><label>Mapping CH</label><input autocomplete='off' class='form-control' name='intermediate_site' ng-model='measure.ch' placeholder='Mapping CH' required></div>"
-				contentString += "<div class='form-group col-sm-3'><label>Measurment CH</label><input autocomplete='off' class='form-control' name='intermediate_site' ng-model='measure.measurement_ch' placeholder='Intermediate Site' required></div>"
-				contentString += "<div class='form-group col-sm-3'><label>GPS Offset Length</label><input autocomplete='off' class='form-control' name='intermediate_site' ng-model='measure.offset_length' placeholder='Intermediate Site' required></div>"
-				contentString += "<div class='form-group col-sm-3'><label>N offset, E offset</label><input autocomplete='off' class='form-control' name='intermediate_site' ng-model='measure.intermediate_site' placeholder='' required style='height: 20px;'><input autocomplete='off' class='form-control' name='intermediate_site' ng-model='measure.intermediate_site' placeholder='' required style='height: 19px;'></div>"
-				contentString += "<div class='form-group col-sm-6'><input autocomplete='off' class='form-control' name='intermediate_site' ng-model='previousData.lSection' placeholder='L-Section Offset' required></div>"
-				contentString += "<div class='form-group col-sm-6'><input autocomplete='off' class='form-control' name='intermediate_site' ng-model='previousData.xSection' placeholder='X-Section Offset' required></div>"
-				contentString += "<div class='form-group'><angucomplete-alt id='members'placeholder='Search Layers'pause='400'selected-object='testObj'remote-url='server/getLayers.php?s='remote-url-data-field='data'title-field='code'description-field='description'minlength='1'input-class='form-control form-control-small' ng-model='measure.layer_name'/></div>"
-				contentString += "<div class='form-group col-sm-4'><input autocomplete=off class=form-control name=back_site ng-blur=calHight(); ng-model='measure.back_site' placeholder='Back Site' required></div>"
-				contentString += "<div class='form-group col-sm-4'><input autocomplete='off' class='form-control' name='intermediate_site' ng-blur='calReduceLevel();calHight();' ng-model='measure.intermediate_site' placeholder='Intermediate Site' required></div>"
-				contentString += "<div class='form-group col-sm-4'><input autocomplete='off' class='form-control' name='fore_site' ng-blur='calReduceLevel()' ng-model='measure.fore_site' placeholder='Fore Site' required></div>"
-				contentString += "<div class='form-group col-sm-6'><input autocomplete='off' class='form-control' name='intermediate_site' ng-model='previousData.lSection' placeholder='DGPS Filename'></div>"
-				contentString += "<div class='form-group col-sm-6'><input autocomplete='off' class='form-control' name='intermediate_site' ng-model='previousData.xSection' placeholder='EL'></div>"
-				contentString += "<button class='btn btn-primary waves-effect waves-light' ng-click='switchProject()' ng-disabled='opamgForm.$invalid'>Next</button>"
-				contentString += "</form>";
-
-                    var infowindow = new google.maps.InfoWindow();
-                  */    
+		}); 
 				google.maps.event.addListener(
                     marker,
                     'click', (function(marker, $scope) {
@@ -195,14 +166,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
 	}    
     
 	$scope.addBasic = function( id ){
-		$scope.measure.back_site = 0;
-		$scope.measure.intermediate_site = 0;
-		$scope.measure.fore_site = 0;
-		$scope.measure.adj_rl = 0;
-		$scope.measure.reduce_level = 0;
-		$scope.measure.northing = 0;
-		$scope.measure.easting = 0;
-	
+		
 		$scope.switchForm1 = true;
 		$scope.switchForm2 = false;
 		
@@ -276,9 +240,98 @@ app.controller("projectsController", function( $scope, project , $location, meas
         $scope.measure.ch =  (parseFloat($scope.previousData.ch) + parseFloat($scope.measure.offset_length)).toFixed(3);
     };
     
+	$scope.calSiteOffset = function( dataInput ){
+		var returnVal;
+		if( $scope.previousData == null ){
+			if( dataInput.length > 1 ){
+				if( dataInput[0] > 0 && dataInput[2] > 0){
+					returnVal = (( dataInput[0] - dataInput[2] )*100)
+				}else{
+					returnVal = 0;
+				}
+			}else{
+				returnVal = dataInput[0];
+			}
+		}else{
+			if( dataInput.length > 1 ){
+				returnVal = (( dataInput[0] - dataInput[2] )*100);
+			}else{
+				returnVal = dataInput[0];
+			}
+		}
+		return isNaN(Math.round(returnVal)) ? 0 : Math.round(returnVal);
+	};
+	
+	$scope.calSiteOffsetSumMean = function( dataInput ){
+		var sum = 0, mean = 0;
+		if( dataInput.length > 1 ){
+			for( j=0; j < dataInput.length; j++ ){
+				sum += dataInput[j];
+			}
+			
+			mean = sum/dataInput.length;
+		}else{
+			sum = dataInput[0];
+			mean = dataInput[0];
+		}
+		sum = isNaN( sum ) ? 0 : sum;
+		mean = isNaN( mean ) ? 0 : mean;
+		
+		return {'sum': sum.toFixed(3), 'mean': mean.toFixed(3)};
+	};
+	
+	$scope.calRiseFall = function( bsMean, fsMean ){
+		var rise, fall;
+		// Calculate Rise Plus
+		if( bsMean > fsMean ){
+			rise = bsMean - fsMean;
+		}else{
+			rise = 0;
+		}
+		
+		// Calculate Fall Minus
+		if( bsMean < fsMean ){
+			fall = fsMean - bsMean;
+		}else{
+			fall = 0;
+		}
+		
+		return {'rise': rise.toFixed(3), 'fall': fall.toFixed(3) };
+	};
+	
     $scope.addMeasurement = function(){
 		$scope.measure.layer = $scope.layerString.title;
+		$scope.measure.backSite = [];
+		$scope.measure.intermediateSite = [];
+		$scope.measure.foreSite = [];
+		
+		for( var j = 1; j <= $scope.measure.number; j++ ){
+			$scope.measure.backSite.push( parseFloat($("#back_site_"+ j).val()) );
+			$scope.measure.intermediateSite.push( parseFloat($("#intermediate_site_"+ j).val()) );
+			$scope.measure.foreSite.push( parseFloat($("#fore_site_"+ j).val()) );
+		}
+		
+		$scope.measure.bsOffset = $scope.calSiteOffset( $scope.measure.backSite );
+		$scope.measure.isOffset = $scope.calSiteOffset( $scope.measure.intermediateSite );
+		$scope.measure.fsOffset = $scope.calSiteOffset( $scope.measure.foreSite );
+		
+		var bsSumMean = $scope.calSiteOffsetSumMean( $scope.measure.backSite );
+		var isSumMean = $scope.calSiteOffsetSumMean( $scope.measure.intermediateSite );
+		var fsSumMean = $scope.calSiteOffsetSumMean( $scope.measure.foreSite );
+		
+		$scope.measure.bsOffsetSum = bsSumMean.sum;
+		$scope.measure.bsOffsetMean = bsSumMean.mean;
+		$scope.measure.isOffsetSum = isSumMean.sum;
+		$scope.measure.isOffsetMean = isSumMean.mean;
+		$scope.measure.fsOffsetSum = fsSumMean.sum;
+		$scope.measure.fsOffsetMean = fsSumMean.mean;
+		
+		var bsRiseFall = $scope.calRiseFall( $scope.measure.bsOffsetMean, $scope.measure.fsOffsetMean );
+		
+		$scope.measure.risePlus = bsRiseFall.rise;
+		$scope.measure.fallMinus = bsRiseFall.fall;
 		console.log($scope.measure)
+		console.log($scope.previousData)
         /* $scope.measure.action = "add";
         $scope.measure.id = $scope.project_id;
         $scope.measure.updatedDate = new Date();
@@ -332,14 +385,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		$scope.equipment.owner = data.owner;
 		console.log($scope.equipment)
 	}
-	
-	
-	$scope.getNumber = function(num) {
-		$scope.numbers = [];
-		for( i=0; i< num; i++)
-			$scope.numbers.push(i)
-	}
-	
+		
 	function DDtoDMS(){
 	//Input= xd(long) and yd(lat)
 	//Output = xdd xm xs (long) and ydd ym ys (lat)
