@@ -12,7 +12,6 @@ app.controller("projectsController", function( $scope, project , $location, meas
 	$scope.addMeasurementHolder = false;
 	$scope.addMeasurementListHolder = true;
 		
-    //$scope.layerNames = ['ELECTRICAL POLE 220 V', 'ELECTRICAL POLE 440 V', 'ELECTRICAL POLE 11 KV', 'ELECTRICAL POLE 33 KV', 'ELECTRICAL POLE 110 KV', 'ELECTRICAL POLE 220 KV', 'TRANSFERMER', 'N…..NO OF SAVE DATA IN LIST'];	
     $scope.listLayers = function(){ 
         $scope.mappingLayer.action = "list";
         layers.commonFun( $scope.mappingLayer ).then( function(response){
@@ -127,11 +126,14 @@ app.controller("projectsController", function( $scope, project , $location, meas
 			var latitude = map.getCenter().lat().toFixed(6);
 			var longitude = map.getCenter().lng().toFixed(6);
 			$scope.value = GeogToUTM(map.getCenter());
-			console.log($scope.value)
-			$scope.measure.latitude = $scope.value.latitude.D +", "+ $scope.value.latitude.M +", "+$scope.value.latitude.S;
-			$scope.measure.longitude = $scope.value.longitude.D +", "+ $scope.value.longitude.M +", "+$scope.value.longitude.S;
+			$scope.measure.latitude = latitude;
+			$scope.measure.longitude = longitude
+			
+			$scope.measure.latitudeDMS = $scope.value.latitude.D +", "+ $scope.value.latitude.M +", "+$scope.value.latitude.S;
+			$scope.measure.longitudeDMS = $scope.value.longitude.D +", "+ $scope.value.longitude.M +", "+$scope.value.longitude.S;
 			$scope.measure.easting = $scope.value.easting;
 			$scope.measure.northing = $scope.value.northing;
+			$scope.measure.zone = $scope.value.zone;
 			$scope.$apply();
 			google.maps.event.trigger(map, "resize");
 		});
@@ -140,6 +142,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
 			console.log($scope.value);
 			$scope.measure.easting = $scope.value.easting;
 			$scope.measure.northing = $scope.value.northing;
+			$scope.measure.zone = $scope.value.zone;
 			$scope.$apply();
 			map.panTo(mapEvent.latLng);
 		}); 
@@ -151,7 +154,6 @@ app.controller("projectsController", function( $scope, project , $location, meas
                             $scope.$apply();
 							infowindow.setContent(compiled[0]);
                             infowindow.open(map, marker); */
-							alert();
 							$scope.switchForm1 = false;
 							$scope.switchForm2 = true;
 							$scope.$apply();
@@ -184,7 +186,8 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		
         $scope.measure.action = "listMeasurement";
         $scope.measure.id = id;
-        measurements.commonFun( $scope.measure ).then( function( response ){            
+        measurements.commonFun( $scope.measure ).then( function( response ){
+				console.log(response.data.data.previous)
             if( response.data.data.previous == null ){
                 $scope.measure.ch = 0;
                 $scope.measure.measurement_ch = 0;
@@ -200,11 +203,12 @@ app.controller("projectsController", function( $scope, project , $location, meas
     };
     
     $scope.addMarker = function( list ){
+		console.log(list);
         for( i = 0; i < list.length; i++ ) {
             var position = new google.maps.LatLng(list[i]['lattitude'], list[i]['longitude']);
             marker = new google.maps.Marker({
                 position: position,
-                icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
+                icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|FE0000',
                 map: map
             });
         }
@@ -242,7 +246,8 @@ app.controller("projectsController", function( $scope, project , $location, meas
     
 	$scope.calSiteOffset = function( dataInput ){
 		var returnVal;
-		if( $scope.previousData == null ){
+		//if( $scope.previousData == null ){
+		if( $scope.previousDataLength == 0 ){
 			if( dataInput.length > 1 ){
 				if( dataInput[0] > 0 && dataInput[2] > 0){
 					returnVal = (( dataInput[0] - dataInput[2] )*100)
@@ -267,8 +272,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		if( dataInput.length > 1 ){
 			for( j=0; j < dataInput.length; j++ ){
 				sum += dataInput[j];
-			}
-			
+			}			
 			mean = sum/dataInput.length;
 		}else{
 			sum = dataInput[0];
@@ -298,12 +302,50 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		
 		return {'rise': rise.toFixed(3), 'fall': fall.toFixed(3) };
 	};
+	$scope.calCheckedReduceLevel = function(){
+		var returnVal = ($scope.measure.tbm_rl == undefined) ? 0.000 : parseFloat($scope.measure.tbm_rl);
+		
+		if( $scope.previousDataLength == 0 ){			
+			return parseFloat(returnVal).toFixed(3);
+		}
+	};
+	
+	$scope.calReduceLevel = function(){
+		if( $scope.previousDataLength == 0 ){
+			return $scope.measure.checkedReduceLevel;
+		}
+	};
+	
+	$scope.calheightOfInstrument = function( checkedReduceLevel, bsOffsetMean, isOffsetMean ){
+		var returnData;
+		returnData = parseFloat(checkedReduceLevel) + ( parseFloat(bsOffsetMean) + parseFloat(isOffsetMean) );
+		return returnData.toFixed(3);
+	};
+	
+	$scope.calAdjustmentError = function( tbm_rl, reduceLevel){
+		var returnData;
+		if( tbm_rl > 0 ){
+			returnData = parseFloat(reduceLevel) - parseFloat(tbm_rl);
+		}else{
+			returnData = 0.000;
+		}		
+		return returnData.toFixed(3);
+	};
+	
+	$scope.calChByAutoLevel = function(){
+		if( $scope.previousDataLength == 0 ){
+			return "0";
+		}
+	};
 	
     $scope.addMeasurement = function(){
 		$scope.measure.layer = $scope.layerString.title;
 		$scope.measure.backSite = [];
 		$scope.measure.intermediateSite = [];
 		$scope.measure.foreSite = [];
+		
+		var keys = Object.keys($scope.previousData);
+		$scope.previousDataLength = keys.length
 		
 		for( var j = 1; j <= $scope.measure.number; j++ ){
 			$scope.measure.backSite.push( parseFloat($("#back_site_"+ j).val()) );
@@ -317,8 +359,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		
 		var bsSumMean = $scope.calSiteOffsetSumMean( $scope.measure.backSite );
 		var isSumMean = $scope.calSiteOffsetSumMean( $scope.measure.intermediateSite );
-		var fsSumMean = $scope.calSiteOffsetSumMean( $scope.measure.foreSite );
-		
+		var fsSumMean = $scope.calSiteOffsetSumMean( $scope.measure.foreSite );		
 		$scope.measure.bsOffsetSum = bsSumMean.sum;
 		$scope.measure.bsOffsetMean = bsSumMean.mean;
 		$scope.measure.isOffsetSum = isSumMean.sum;
@@ -326,14 +367,22 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		$scope.measure.fsOffsetSum = fsSumMean.sum;
 		$scope.measure.fsOffsetMean = fsSumMean.mean;
 		
-		var bsRiseFall = $scope.calRiseFall( $scope.measure.bsOffsetMean, $scope.measure.fsOffsetMean );
-		
+		var bsRiseFall = $scope.calRiseFall( $scope.measure.bsOffsetMean, $scope.measure.fsOffsetMean );		
 		$scope.measure.risePlus = bsRiseFall.rise;
 		$scope.measure.fallMinus = bsRiseFall.fall;
+		
+		$scope.measure.chByAutoLevel = $scope.calChByAutoLevel();
+		$scope.measure.checkedReduceLevel = $scope.calCheckedReduceLevel();
+		$scope.measure.reduceLevel = $scope.calReduceLevel();
+		$scope.measure.heightOfInstrument = $scope.calheightOfInstrument( $scope.measure.checkedReduceLevel, $scope.measure.bsOffsetMean, $scope.measure.isOffsetMean);
+		$scope.measure.avgHeightOfInstrument = $scope.measure.heightOfInstrument - $scope.measure.checkedReduceLevel;
+		$scope.measure.adjustmentError = $scope.calAdjustmentError( $scope.measure.tbm_rl, $scope.measure.reduceLevel );
+		$scope.measure.id = $scope.project_id;
+		
 		console.log($scope.measure)
 		console.log($scope.previousData)
-        /* $scope.measure.action = "add";
-        $scope.measure.id = $scope.project_id;
+        $scope.measure.action = "add";
+        
         $scope.measure.updatedDate = new Date();
         measurements.commonFun( $scope.measure ).then( function( response ){
 			if( $scope.measure.intermediate_site != 0 ){
@@ -348,7 +397,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
 				$scope.loadMeasurements( $scope.project_id );
 			}
             $scope.project_list();
-        }); */
+        });
     };
 	$scope.switchProject = function(){
 		/* $scope.measure.layer_name = $('#layer').val();
@@ -378,6 +427,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
 	$scope.readEquipment = function( val ){
 		$scope.equipment = {};
 		var data = angular.fromJson(val);
+		$scope.measure.equipmentId = data.id;
 		$scope.equipment.model_number = data.model_number;
 		$scope.equipment.last_calibration_service_center = data.last_calibration_service_center;
 		$scope.equipment.least_count = data.least_count;

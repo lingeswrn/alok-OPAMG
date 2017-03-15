@@ -86,33 +86,7 @@ $logToken = $logToken_array['login_token'];
                 'status' => 'OK'
             );
         }
-    }else if( $action == "cancelRide" ){
-        
-        $query = "SELECT * FROM bookings WHERE id = '".$data->data->id."'";
-        $qryw = $fun->SelectFromTable($query);
-        
-        if( $qryw[0]['driver_id'] == 0 ){
-            
-            $input_rider['status'] = 'Cancelled';
-            $input_rider['id'] = $data->data->id;
-
-            $delete_drivers = $fun->UpdateTable('bookings',$input_rider,'id');
-        }else{
-            $input_rider['status'] = 'Cancelled';
-            $input_rider['id'] = $data->data->id;
-            
-            $input_driver['duty_status'] = 'Free';
-            $input_driver['id'] = $qryw[0]['driver_id'];
-            
-            $delete_drivers = $fun->UpdateTable('drivers',$input_driver,'id');
-            $delete_drivers = $fun->UpdateTable('bookings',$input_rider,'id');
-        }
-        $response = array(
-            'code' => 200,
-            'status' => 'OK'
-        );
     }
-
 
 echo json_encode($response);
 ?>

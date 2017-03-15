@@ -99,7 +99,7 @@
 												class="form-control" 
 												type="text" 
 												placeholder="Latitude"
-												ng-model="measure.latitude"
+												ng-model="measure.latitudeDMS"
 												name="latitude"
 												autocomplete="off"
 												required
@@ -113,7 +113,7 @@
 												class="form-control" 
 												type="text" 
 												placeholder="Longitude"
-												ng-model="measure.longitude"
+												ng-model="measure.longitudeDMS"
 												name="longitude"
 												autocomplete="off"
 												required
@@ -210,12 +210,12 @@
 											<angucomplete-alt id='members'placeholder='Search Layers'pause='400'selected-object='layerString' remote-url='server/getLayers.php?s='remote-url-data-field='data'title-field='code'description-field='description'minlength='1'input-class='form-control form-control-small' ng-model='measure.layer_name'/>
 										</div>
 										<div class='form-group col-sm-12'>
-											<select class="form-control" ng-model="number">
+											<select class="form-control" ng-model="measure.number">
 												<option value="1">1</option>
 												<option value="3">3</option>
 											</select>
 										</div>
-										<div class='form-group col-sm-4' ng-repeat=" i in [] | range:number">
+										<div class='form-group col-sm-4' ng-repeat=" i in [] | range:measure.number">
 											<input 
 												class="form-control" 
 												name="back_site" 
@@ -223,14 +223,14 @@
 												id="back_site_{{$index + 1}}"
 												required>
 										</div>
-										<div class='form-group col-sm-4' ng-repeat=" i in [] | range:number">
+										<div class='form-group col-sm-4' ng-repeat=" i in [] | range:measure.number">
 											<input 
 												class='form-control'  
 												id="intermediate_site_{{$index + 1}}"
 												placeholder='Intermediate Site' 
 												required>
 										</div>
-										<div class='form-group col-sm-4' ng-repeat=" i in [] | range:number">
+										<div class='form-group col-sm-4' ng-repeat=" i in [] | range:measure.number">
 											<input 
 												class='form-control' 
 												name='fore_site' 
@@ -305,8 +305,7 @@
 												class="form-control" 
 												type="text" 
 												placeholder="Hight of Instrument"
-												ng-model="measure.hight_of_instrument"
-												name="hight_of_instrument"
+												ng-model="measure.heightOfInstrument"
 												autocomplete="off"
 											>
 										</div>	

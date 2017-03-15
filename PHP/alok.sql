@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 14, 2017 at 01:53 PM
+-- Generation Time: Mar 15, 2017 at 01:42 PM
 -- Server version: 5.7.11
 -- PHP Version: 5.6.19
 
@@ -90,8 +90,18 @@ CREATE TABLE `gps_coordinates` (
   `type` enum('lat','lng') NOT NULL,
   `deg` varchar(255) NOT NULL,
   `min` varchar(255) NOT NULL,
-  `sec` int(255) NOT NULL
+  `sec` varchar(255) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `gps_coordinates`
+--
+
+INSERT INTO `gps_coordinates` (`id`, `measurment_id`, `type`, `deg`, `min`, `sec`) VALUES
+(1, 1, 'lat', '12', '58', '32.81'),
+(2, 1, 'lng', '77', '36', '22.757'),
+(3, 2, 'lat', '12', '58', '59.909'),
+(4, 2, 'lng', '77', '35', '35.79');
 
 -- --------------------------------------------------------
 
@@ -114,7 +124,7 @@ CREATE TABLE `layers` (
 --
 
 INSERT INTO `layers` (`id`, `symble`, `code`, `category`, `description`, `status`, `created_date`) VALUES
-(1, 'Occ', 'OCC', 'Survey Field Station', 'OCCUPIED POINT', 1, '2017-03-09 13:30:12'),
+(1, 'FFFF00', 'OCC', 'Survey Field Station', 'OCCUPIED POINT', 1, '2017-03-09 13:30:12'),
 (2, '008000', 'BS', 'Survey Field Station', 'BACK SIGHT', 1, '2017-03-09 13:30:12'),
 (3, 'FE0000', 'FS', 'Survey Field Station', 'FORE SIGHT', 1, '2017-03-09 13:30:12'),
 (4, '455D87', 'BM', 'Survey Field Station', 'BENCH MARK', 1, '2017-03-09 13:30:12'),
@@ -1128,7 +1138,7 @@ CREATE TABLE `measurement` (
   `project_id` int(11) NOT NULL,
   `equipement_id` int(11) NOT NULL,
   `layer_code` varchar(150) NOT NULL,
-  `latitude` float(8,3) NOT NULL,
+  `lattitude` float(8,3) NOT NULL,
   `longitude` float(8,3) NOT NULL,
   `utm_zone` int(11) NOT NULL,
   `utm_easting` float(12,3) NOT NULL,
@@ -1151,18 +1161,26 @@ CREATE TABLE `measurement` (
   `calculated_reduce_rl` float(7,3) NOT NULL,
   `checked_reduce_level` float(7,3) NOT NULL,
   `remarks` varchar(255) NOT NULL,
+  `adj_rl` varchar(255) DEFAULT NULL,
   `adjustment_error` float(7,3) NOT NULL,
   `tbm_rl` float(7,3) NOT NULL,
   `bs_angle` float(7,3) NOT NULL,
-  `is_angle` float(7,3) NOT NULL,
   `fs_angle` float(7,3) NOT NULL,
-  `close_photograph` varchar(255) NOT NULL,
-  `location_photograph` varchar(255) NOT NULL,
-  `screen_shot` varchar(255) NOT NULL,
-  `other_photograph` varchar(255) NOT NULL,
+  `close_photograph` varchar(255) DEFAULT NULL,
+  `location_photograph` varchar(255) DEFAULT NULL,
+  `screen_shot` varchar(255) DEFAULT NULL,
+  `other_photograph` varchar(255) DEFAULT NULL,
   `status` tinyint(4) NOT NULL DEFAULT '1',
   `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `measurement`
+--
+
+INSERT INTO `measurement` (`id`, `project_id`, `equipement_id`, `layer_code`, `lattitude`, `longitude`, `utm_zone`, `utm_easting`, `utm_northing`, `el`, `mapping_ch`, `ch_by_auto_level`, `measurment_ch`, `bs_offset`, `is_offset`, `fs_offset`, `n_offset`, `e_offset`, `l_section_offset`, `x_section_offset`, `rise_plus`, `fall_minus`, `avg_hight_of_instrument_from_gl`, `hight_of_instrument`, `calculated_reduce_rl`, `checked_reduce_level`, `remarks`, `adj_rl`, `adjustment_error`, `tbm_rl`, `bs_angle`, `fs_angle`, `close_photograph`, `location_photograph`, `screen_shot`, `other_photograph`, `status`, `created_date`) VALUES
+(1, 8, 1, 'OCC', 12.976, 77.606, 43, 1435902.125, 782748.688, '25.00', 0.000, 0.000, 0.000, 20.000, 0.000, 0.000, 0.000, 0.000, '30', '20', 1.650, 0.000, 1.650, 1.650, 0.000, 0.000, 'testomf', NULL, 0.000, 0.000, 20.000, 30.000, NULL, NULL, NULL, NULL, 1, '2017-03-15 05:23:27'),
+(2, 9, 1, 'OCC', 12.983, 77.593, 43, 1436720.875, 781324.000, 'tt', 0.000, 0.000, 0.000, 2.000, 0.000, 0.000, 0.000, 0.000, '20.00', '32.00', 1.750, 0.000, 1.750, 1.750, 0.000, 0.000, 'testbj', '25.00', 0.000, 0.000, 2.000, 232.000, NULL, NULL, NULL, NULL, 1, '2017-03-15 05:44:38');
 
 -- --------------------------------------------------------
 
@@ -1278,7 +1296,8 @@ INSERT INTO `projects` (`id`, `_from`, `_to`, `project_name`, `company_name`, `c
 (5, 'd', 's', 'p', 'p', '1', 's', '8', 'w', 1, 0, '2017-03-06 07:01:34', '0000-00-00 00:00:00'),
 (6, 'f', 'g', 'c', 'c', 'a', 'd', 'e', 'h', 1, 0, '2017-03-06 15:17:12', '0000-00-00 00:00:00'),
 (7, 'RANCHI', 'JAMSHEDPUR', 'SURVEY WORK', 'SURVEY WORK', 'JSPL', '12345', 'ASDIOP', 'ABCD', 1, 1, '2017-03-11 05:15:52', '2017-03-11 14:13:20'),
-(8, 'RANCHI', 'TYYY', 'JAMSHEDPUR', 'SIGMA', '', 'ABCDEFGH', '123456', 'TY', 1, 1, '2017-03-11 14:12:21', '2017-03-11 14:12:21');
+(8, 'RANCHI', 'TYYY', 'JAMSHEDPUR', 'SIGMA', '', 'ABCDEFGH', '123456', 'TY', 1, 1, '2017-03-11 14:12:21', '2017-03-15 10:53:27'),
+(9, 'i', 'i', 'i', 'ii', '', 'i', 'i', 'i', 1, 1, '2017-03-15 11:13:58', '2017-03-15 11:14:38');
 
 -- --------------------------------------------------------
 
@@ -1312,10 +1331,18 @@ INSERT INTO `roles` (`id`, `name`, `created_date`) VALUES
 CREATE TABLE `staff_readings` (
   `id` int(11) NOT NULL,
   `measurment_id` int(11) NOT NULL,
-  `back_site` float(7,3) NOT NULL,
-  `intermediate_site` float(7,3) NOT NULL,
-  `forward_site` float(7,3) NOT NULL
+  `back_site` varchar(255) NOT NULL,
+  `intermediate_site` varchar(255) NOT NULL,
+  `forward_site` varchar(255) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `staff_readings`
+--
+
+INSERT INTO `staff_readings` (`id`, `measurment_id`, `back_site`, `intermediate_site`, `forward_site`) VALUES
+(1, 1, '1.75,1.65,1.55', ',,', ',,'),
+(2, 2, '1.75', '', '');
 
 -- --------------------------------------------------------
 
@@ -1434,7 +1461,7 @@ ALTER TABLE `equipments_list`
 -- AUTO_INCREMENT for table `gps_coordinates`
 --
 ALTER TABLE `gps_coordinates`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `layers`
 --
@@ -1444,7 +1471,7 @@ ALTER TABLE `layers`
 -- AUTO_INCREMENT for table `measurement`
 --
 ALTER TABLE `measurement`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `measurement_old`
 --
@@ -1454,7 +1481,7 @@ ALTER TABLE `measurement_old`
 -- AUTO_INCREMENT for table `projects`
 --
 ALTER TABLE `projects`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 --
 -- AUTO_INCREMENT for table `roles`
 --
@@ -1464,7 +1491,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `staff_readings`
 --
 ALTER TABLE `staff_readings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `users`
 --
