@@ -16,7 +16,7 @@ if( !empty($_SESSION['COMMON_TOKEN'])){
     
     if( $action == "listMeasurement" ){
 		
-        $query = "SELECT * FROM measurement WHERE status = '1' AND project_id ='".$data->data->id."'";
+        $query = "SELECT measurement.*,layers.symble FROM measurement LEFT OUTER JOIN layers ON layers.code = measurement.layer_code WHERE measurement.status = '1' AND measurement.project_id ='".$data->data->id."'";
         $qryw = $fun->SelectFromTable($query);
 		
         $query_proj = "SELECT * FROM projects WHERE id ='".$data->data->id."'";
@@ -33,7 +33,7 @@ if( !empty($_SESSION['COMMON_TOKEN'])){
         $input_measurement['project_id'] = $data->data->id;
         $input_measurement['equipement_id'] = $data->data->equipmentId;
         $input_measurement['layer_code'] = $data->data->layer;
-        $input_measurement['latitude'] = $data->data->latitude;
+        $input_measurement['lattitude'] = $data->data->latitude;
         $input_measurement['longitude'] = $data->data->longitude;
         $input_measurement['utm_zone'] = $data->data->zone;
         $input_measurement['utm_easting'] = $data->data->easting;

@@ -181,68 +181,85 @@ app.controller("projectsController", function( $scope, project , $location, meas
         getGeolocation()    
 	}
 	
+	$scope.calNOffset = function( currentNorthing, previousNorthing ){
+		var returnData;
+		if( currentNorthing > 0 ){
+			returnData = parseFloat(currentNorthing) - parseFloat(previousNorthing);
+		}else{
+			returnData = 0;
+		}
+		return returnData.toFixed(3);
+	};
+	
+	$scope.calEOffset = function( currentEasting, previousEasting ){
+		var returnData;
+		if( currentEasting > 0 ){
+			returnData = parseFloat(currentEasting) - parseFloat(previousEasting);
+		}else{
+			returnData = 0;
+		}
+		return returnData.toFixed(3);
+	};
+	
+	$scope.calGPSOffsetLength = function( currentNorthing, currentEasting, previousNorthing, previousEasting, currentNOffset, currentEOffset ){
+		var returnData;
+		if( currentNOffset > 0 && currentEOffset > 0){
+			returnData = Math.pow(Math.pow(( parseFloat(currentEasting) - parseFloat(previousEasting)),2) + Math.pow((parseFloat(currentNorthing) - parseFloat(previousNorthing)),2),0.5);
+		}else{
+			returnData = 0;
+		}
+		return returnData.toFixed(3);
+	};
+	
+	$scope.calMappingCh = function( currentNOffset, currentGPSOffset, previousCH ){
+		var returnData;
+		if( currentNOffset > 0 ){
+			returnData = parseFloat(currentGPSOffset) + parseFloat(previousCH);
+		}else{
+			returnData = 0;
+		}
+		return returnData.toFixed(3);
+	};
 	
     $scope.loadMeasurements = function( id ){
 		
         $scope.measure.action = "listMeasurement";
         $scope.measure.id = id;
         measurements.commonFun( $scope.measure ).then( function( response ){
-				console.log(response.data.data.previous)
+			console.log(response.data.data.previous)
             if( response.data.data.previous == null ){
                 $scope.measure.ch = 0;
                 $scope.measure.measurement_ch = 0;
                 $scope.measure.gps_offset_length = 0;
                 $scope.measure.n_offset = 0;
                 $scope.measure.e_offset = 0;
+				$scope.previousDataLength = 0;
             }else{
-                $scope.previousData = response.data.data.previous;
+				
+                $scope.previousData = response.data.data.previous;				
                 $scope.measurementList = response.data.data.list;
+				
+				$scope.measure.n_offset = $scope.calNOffset( $scope.measure.northing, $scope.previousData.utm_northing );
+				$scope.measure.e_offset = $scope.calEOffset( $scope.measure.easting, $scope.previousData.utm_easting );
+				$scope.measure.gps_offset_length = $scope.calGPSOffsetLength( $scope.measure.northing, $scope.measure.easting, $scope.previousData.utm_northing, $scope.previousData.utm_easting, $scope.measure.n_offset, $scope.measure.e_offset);
+				$scope.measure.ch = $scope.calMappingCh( $scope.measure.n_offset, $scope.measure.gps_offset_length, $scope.previousData.mapping_ch );
 				$scope.addMarker( $scope.measurementList );
+				var keys = Object.keys($scope.previousData);
+				$scope.previousDataLength = keys.length
             }
         });
     };
     
     $scope.addMarker = function( list ){
-		console.log(list);
         for( i = 0; i < list.length; i++ ) {
             var position = new google.maps.LatLng(list[i]['lattitude'], list[i]['longitude']);
             marker = new google.maps.Marker({
                 position: position,
-                icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|FE0000',
+                icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|'+list[i]['symble'],
                 map: map
             });
         }
     }
-    $scope.calReduceLevel = function(){ 
-        console.log($scope.measure)
-        $scope.measure.reduce_level = ( $scope.previousData.hight_of_instrument - ( parseFloat($scope.measure.intermediate_site) + parseFloat($scope.measure.fore_site) ) + ( parseFloat($scope.measure.adj) ) );
-        
-    };
-    
-    
-    $scope.calHight = function(){
-		console.log($scope.measure)
-        if( $scope.previousData.reduce_level == 0 ){
-            $scope.measure.hight_of_instrument = ( parseFloat($scope.measure.reduce_level) + ( parseFloat($scope.measure.intermediate_site) + parseFloat($scope.measure.back_site) ) );
-
-        }else{
-           $scope.measure.hight_of_instrument = ( parseFloat($scope.measure.reduce_level) + ( parseFloat($scope.measure.intermediate_site) + parseFloat($scope.measure.back_site) ) );
-        }
-    };
-    
-    $scope.calOffset = function(){
-        if( $scope.previousData.reduce_level == 0 ){
-            $scope.measure.offset_length = 0;
-            $scope.calCH();
-        }else{
-            $scope.measure.offset_length = Math.sqrt( Math.pow(( $scope.previousData.northing - $scope.measure.northing ),2) + Math.pow( ( $scope.previousData.easting - $scope.measure.easting ) , 2)).toFixed(3);
-            $scope.calCH(); 
-        }
-    };
-    
-    $scope.calCH = function(){
-        $scope.measure.ch =  (parseFloat($scope.previousData.ch) + parseFloat($scope.measure.offset_length)).toFixed(3);
-    };
     
 	$scope.calSiteOffset = function( dataInput ){
 		var returnVal;
@@ -302,17 +319,25 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		
 		return {'rise': rise.toFixed(3), 'fall': fall.toFixed(3) };
 	};
-	$scope.calCheckedReduceLevel = function(){
+	$scope.calCheckedReduceLevel = function( previousHightOfInstrument, currentISMean, currentFSMean ){
 		var returnVal = ($scope.measure.tbm_rl == undefined) ? 0.000 : parseFloat($scope.measure.tbm_rl);
 		
 		if( $scope.previousDataLength == 0 ){			
 			return parseFloat(returnVal).toFixed(3);
+		}else{
+			if( returnVal > 0 ){
+				return parseFloat(returnVal).toFixed(3);
+			}else{
+				return parseFloat(previousHightOfInstrument) - ( parseFloat(currentISMean) + parseFloat(currentFSMean) );
+			}
 		}
 	};
 	
-	$scope.calReduceLevel = function(){
+	$scope.calReduceLevel = function( previousHightOfInstrument, currentISMean, currentFSMean ){
 		if( $scope.previousDataLength == 0 ){
 			return $scope.measure.checkedReduceLevel;
+		}else{
+			return parseFloat(previousHightOfInstrument) - ( parseFloat(currentISMean) + parseFloat(currentFSMean) );
 		}
 	};
 	
@@ -332,9 +357,24 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		return returnData.toFixed(3);
 	};
 	
-	$scope.calChByAutoLevel = function(){
+	$scope.calChByAutoLevel = function( previousCHAutoLevel, currentBS, currentFS){
 		if( $scope.previousDataLength == 0 ){
 			return "0";
+		}else{
+			return parseFloat(previousCHAutoLevel) + parseFloat(currentBS) + parseFloat(currentFS);
+		}
+	};
+	
+	$scope.calMeasurementCH = function(){
+		$scope.measure.xSection = ($scope.measure.xSection == undefined) ? 0.000 : parseFloat($scope.measure.xSection);
+		$scope.measure.lSection = ($scope.measure.lSection == undefined) ? 0.000 : parseFloat($scope.measure.lSection);
+		console.log($scope.previousDataLength)
+		if( $scope.previousDataLength != 0 ){
+			if( $scope.measure.xSection > 0 ){
+				$scope.measure.measurement_ch = parseFloat($scope.previousData.measurment_ch);
+			}else{
+				$scope.measure.measurement_ch = parseFloat($scope.previousData.measurment_ch) + parseFloat($scope.measure.lSection)
+			}
 		}
 	};
 	
@@ -343,9 +383,6 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		$scope.measure.backSite = [];
 		$scope.measure.intermediateSite = [];
 		$scope.measure.foreSite = [];
-		
-		var keys = Object.keys($scope.previousData);
-		$scope.previousDataLength = keys.length
 		
 		for( var j = 1; j <= $scope.measure.number; j++ ){
 			$scope.measure.backSite.push( parseFloat($("#back_site_"+ j).val()) );
@@ -371,9 +408,9 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		$scope.measure.risePlus = bsRiseFall.rise;
 		$scope.measure.fallMinus = bsRiseFall.fall;
 		
-		$scope.measure.chByAutoLevel = $scope.calChByAutoLevel();
-		$scope.measure.checkedReduceLevel = $scope.calCheckedReduceLevel();
-		$scope.measure.reduceLevel = $scope.calReduceLevel();
+		$scope.measure.chByAutoLevel = $scope.calChByAutoLevel( $scope.previousData.ch_by_auto_level, $scope.measure.bsOffset, $scope.measure.fsOffset );
+		$scope.measure.checkedReduceLevel = $scope.calCheckedReduceLevel( $scope.previousData.hight_of_instrument, $scope.measure.isOffsetMean, $scope.measure.fsOffsetMean );
+		$scope.measure.reduceLevel = $scope.calReduceLevel( $scope.previousData.hight_of_instrument, $scope.measure.isOffsetMean, $scope.measure.fsOffsetMean);
 		$scope.measure.heightOfInstrument = $scope.calheightOfInstrument( $scope.measure.checkedReduceLevel, $scope.measure.bsOffsetMean, $scope.measure.isOffsetMean);
 		$scope.measure.avgHeightOfInstrument = $scope.measure.heightOfInstrument - $scope.measure.checkedReduceLevel;
 		$scope.measure.adjustmentError = $scope.calAdjustmentError( $scope.measure.tbm_rl, $scope.measure.reduceLevel );
