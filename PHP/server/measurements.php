@@ -61,8 +61,12 @@ if( !empty($_SESSION['COMMON_TOKEN'])){
         $input_measurement['tbm_rl'] = $data->data->tbm_rl;
         $input_measurement['bs_angle'] = $data->data->bs_angle;
         $input_measurement['fs_angle'] = $data->data->fs_angle;
+        $input_measurement['close_photograph'] = $data->data->close_photograph;
+        $input_measurement['location_photograph'] = $data->data->location_photograph;
+        $input_measurement['screen_shot'] = $data->data->screen_shot;
+        $input_measurement['other_photograph'] = $data->data->other_photograph;
         $input_measurement['created_date'] = date("Y-m-d H:i:s");
-        
+		
         if( empty( $input_project['id'] ) ){
             $add_measurement = $fun->InsertToTable('measurement',$input_measurement);
 			

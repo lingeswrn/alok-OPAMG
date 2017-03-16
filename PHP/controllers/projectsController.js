@@ -1,4 +1,4 @@
-app.controller("projectsController", function( $scope, project , $location, measurements, $compile, layers, equ){
+app.controller("projectsController", function( $scope, project , $location, measurements, $compile, layers, equ, fileUpload){
     $scope.projectData = {};
 	$scope.projectId = '';
 	$scope.measure = {};
@@ -73,7 +73,6 @@ app.controller("projectsController", function( $scope, project , $location, meas
 	
 	
     function initialize_map() {
-		alert()
 		//geocoder = new google.maps.Geocoder();
 		var myOptions = {
 		   zoom: 10,
@@ -123,8 +122,8 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		  // intercept map and marker movements
 		google.maps.event.addListener(map, "idle", function() {
 			//marker.setPosition(map.getCenter());
-			var latitude = map.getCenter().lat().toFixed(6);
-			var longitude = map.getCenter().lng().toFixed(6);
+			var latitude = map.getCenter().lat();
+			var longitude = map.getCenter().lng();
 			$scope.value = GeogToUTM(map.getCenter());
 			$scope.measure.latitude = latitude;
 			$scope.measure.longitude = longitude
@@ -138,8 +137,14 @@ app.controller("projectsController", function( $scope, project , $location, meas
 			google.maps.event.trigger(map, "resize");
 		});
 		google.maps.event.addListener(marker, "dragend", function(mapEvent) {
+			var latitude = mapEvent.latLng.lat();
+			var longitude = mapEvent.latLng.lng();
+			
 			$scope.value = GeogToUTM(mapEvent.latLng);
-			console.log($scope.value);
+			$scope.measure.latitude = latitude;
+			$scope.measure.longitude = longitude
+			$scope.measure.latitudeDMS = $scope.value.latitude.D +", "+ $scope.value.latitude.M +", "+$scope.value.latitude.S;
+			$scope.measure.longitudeDMS = $scope.value.longitude.D +", "+ $scope.value.longitude.M +", "+$scope.value.longitude.S;
 			$scope.measure.easting = $scope.value.easting;
 			$scope.measure.northing = $scope.value.northing;
 			$scope.measure.zone = $scope.value.zone;
@@ -226,7 +231,6 @@ app.controller("projectsController", function( $scope, project , $location, meas
         $scope.measure.action = "listMeasurement";
         $scope.measure.id = id;
         measurements.commonFun( $scope.measure ).then( function( response ){
-			console.log(response.data.data.previous)
             if( response.data.data.previous == null ){
                 $scope.measure.ch = 0;
                 $scope.measure.measurement_ch = 0;
@@ -368,7 +372,6 @@ app.controller("projectsController", function( $scope, project , $location, meas
 	$scope.calMeasurementCH = function(){
 		$scope.measure.xSection = ($scope.measure.xSection == undefined) ? 0.000 : parseFloat($scope.measure.xSection);
 		$scope.measure.lSection = ($scope.measure.lSection == undefined) ? 0.000 : parseFloat($scope.measure.lSection);
-		console.log($scope.previousDataLength)
 		if( $scope.previousDataLength != 0 ){
 			if( $scope.measure.xSection > 0 ){
 				$scope.measure.measurement_ch = parseFloat($scope.previousData.measurment_ch);
@@ -416,32 +419,46 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		$scope.measure.adjustmentError = $scope.calAdjustmentError( $scope.measure.tbm_rl, $scope.measure.reduceLevel );
 		$scope.measure.id = $scope.project_id;
 		
-		console.log($scope.measure)
-		console.log($scope.previousData)
+        var uploadUrl = "server/uploadImage.php";
+		fileUpload.uploadFileToUrl($scope.closeMyFile, uploadUrl).then( function( response ){
+			$scope.measure.close_photograph = response.data;
+		});
+		fileUpload.uploadFileToUrl($scope.LocationMyFile, uploadUrl).then( function( response ){
+			$scope.measure.location_photograph = response.data;
+		});
+		fileUpload.uploadFileToUrl($scope.ScreenMyFile, uploadUrl).then( function( response ){
+			$scope.measure.screen_shot = response.data;
+		});
+		fileUpload.uploadFileToUrl($scope.OtherMyFile, uploadUrl).then( function( response ){
+			$scope.measure.other_photograph = response.data;
+		});
+		
         $scope.measure.action = "add";
         
         $scope.measure.updatedDate = new Date();
-        measurements.commonFun( $scope.measure ).then( function( response ){
-			if( $scope.measure.intermediate_site != 0 ){
-				$scope.measure = {};
-				$scope.switchForm1 = true;
-				$scope.switchForm2 = false;
-				$scope.loadMeasurements( $scope.project_id );
-			}else{
-				$scope.measure = {};
-				$scope.addMeasurementHolder = false;
-				$scope.addMeasurementListHolder = true;
-				$scope.loadMeasurements( $scope.project_id );
-			}
-            $scope.project_list();
-        });
+		setTimeout( function(){
+			measurements.commonFun( $scope.measure ).then( function( response ){
+				if( $scope.measure.intermediate_site != 0 ){
+					$scope.measure = {};
+					$scope.switchForm1 = true;
+					$scope.switchForm2 = false;
+					$scope.loadMeasurements( $scope.project_id );
+				}else{
+					$scope.measure = {};
+					$scope.addMeasurementHolder = false;
+					$scope.addMeasurementListHolder = true;
+					$scope.loadMeasurements( $scope.project_id ); 
+				}
+				$scope.project_list();
+			});
+		}, 1000)
+        
     };
 	$scope.switchProject = function(){
 		/* $scope.measure.layer_name = $('#layer').val();
 		$scope.measure.back_site = $('#back_site').val();
 		$scope.measure.intermediate_site = $('#intermediate_site').val();
 		$scope.measure.fore_site = $('#fore_site').val(); */
-		console.log($scope.measure)
 		$scope.switchForm1 = false;
 		$scope.switchForm2 = true;
 	}
@@ -470,7 +487,6 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		$scope.equipment.least_count = data.least_count;
 		$scope.equipment.expiry_date = data.expiry_date;
 		$scope.equipment.owner = data.owner;
-		console.log($scope.equipment)
 	}
 		
 	function DDtoDMS(){
