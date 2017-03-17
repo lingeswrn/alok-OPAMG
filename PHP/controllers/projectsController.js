@@ -5,6 +5,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
     $scope.previousData = {};
     $scope.mappingLayer = {};
     $scope.equipent = {};
+    $scope.summary = {};
 	$scope.numbers = ["1"];
 	
 	$scope.switchForm1 = true;
@@ -264,12 +265,24 @@ app.controller("projectsController", function( $scope, project , $location, meas
 			//icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|'+list[i]['symble'],
 			(function (i) {
 				google.maps.event.addListener(marker[i], 'click', function () {
-					console.log(marker[i]);
+					$scope.detailPopup(marker[i]['id']);
 				});
 			})(i);
         }
     }
     
+	$scope.detailPopup = function( id ){
+		$scope.summary.id = id;
+		$scope.summary.action = 'measureData';
+		measurements.commonFun( $scope.summary ).then( function( response ){
+			$scope.measureDataResponse = response.data.data.measureData;
+			$scope.GPSDataResponse = response.data.data.gpsReadings;
+			$scope.GPSDataResponseLat = $scope.GPSDataResponse[0];
+			$scope.GPSDataResponseLng = $scope.GPSDataResponse[1];
+			$("#show-measurements-modal").modal();
+		});
+	};
+	
 	$scope.calSiteOffset = function( dataInput ){
 		var returnVal;
 		//if( $scope.previousData == null ){

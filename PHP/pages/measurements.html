@@ -29,69 +29,85 @@
                                 
                                 <div class="row">                                    
                                     <div class="col-sm-12 col-xs-12">
-										<button ng-click="write_to_excel()">Export to Excel</button>
+										<button ng-click="write_to_excel()" class="pull-right btn btn-danger">Export to Excel</button>
+										<h4>Total Entry: {{measureCount}}</h4>
                                         <div class="table-responsive">
                                             <table class="table table2excel" id="tbExport">
                                                 <thead>
 												<tr style="display:none">
 													<th>DATE</th>													
-													<td>{{project_data.date}}</td>
+													<td>{{projectData.created_date}}</td>
 													<th>PROJECT NAME</th>													
-													<td>{{project_data.project_name}}</td>
+													<td>{{projectData.project_name}}</td>
 													<th>COMPANY NAME</th>													
-													<td>{{project_data.company_name}}</td>
+													<td>{{projectData.company_name}}</td>
 													<th>FROM</th>													
-													<td>{{project_data._from}}</td>	
-													<th>TO</th>													
-													<td>{{project_data._to}}</td>													
+													<td>{{projectData._from}}</td>	
+													<th>TO</th>	
+													<td>{{projectData._to}}</td>	
+													<th>Work Order Number</th>	
+													<td>{{projectData.work_order_number}}</td>		
+													<th>Scope of Work ID No.</th>	
+													<td>{{projectData.scope_wrk}}</td>	
+													<th>Remarks</th>	
+													<td>{{projectData.remarks}}</td>													
 												</tr>
 												<tr>
 												</tr>
                                                 <tr>
-                                                    <th>#</th>
+                                                    <th>PT No.</th>
+                                                    <th>N</th>
+                                                    <th>E</th>
                                                     <th>CH</th>
-                                                    <th>Back Site</th>
-                                                    <th>Intermediate Site</th>
-                                                    <th>Fore Site</th>
-                                                    <th>Hight of Instrument</th>
-                                                    <th>Reduce Level</th>
-                                                    <th>Layer Library</th>
+                                                    <th>Offset</th>
+                                                    <th>RL</th>
+                                                    <th>Layer Code</th>
+                                                    <th>Category of Layer</th>
+                                                    <th>Description</th>
                                                     <th>Remarks</th>
-                                                    <th>ADJ</th>
-                                                    <th>ADJ. RL</th>
-                                                    <th>Latitude</th>
-                                                    <th>Longitude</th>
-                                                    <th>Northing</th>
-                                                    <th>Easting</th>
-                                                    <th>Offset of Map</th>
-                                                    <th>Measurement offset</th>
-                                                    <th>Measurement by chainage</th>
+                                                    <th>Lat</th>
+                                                    <th>Long</th>
+                                                    <th>Zone</th>
+                                                    <th>D</th>
+                                                    <th>M</th>
+                                                    <th>S</th>
+                                                    <th>D</th>
+                                                    <th>M</th>
+                                                    <th>S</th>
+                                                    <th>N</th>
+                                                    <th>E</th>
+                                                    <th>Z</th>
+                                                    <th>Layer Code</th>
                                                     <th>Action</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
                                                     <tr ng-repeat="val in measurementList">
                                                         <td ng-bind="$index + 1"></td>
-                                                        <td ng-bind="val.ch"></td>
-                                                        <td ng-bind="val.back_site"></td>
-                                                        <td ng-bind="val.intermediate_site"></td>
-                                                        <td ng-bind="val.fore_site"></td>
-                                                        <td ng-bind="val.hight_of_instrument"></td>
-                                                        <td ng-bind="val.reduce_level"></td>
-                                                        <td ng-bind="val.layer_name"></td>
+                                                        <td ng-bind="val.utm_northing"></td>
+                                                        <td ng-bind="val.utm_easting"></td>
+                                                        <td ng-bind="val.mapping_ch"></td>
+                                                        <td ng-bind="val.measurment_ch"></td>
+                                                        <td ng-bind="val.tbm_rl"></td>
+                                                        <td ng-bind="val.layer_code"></td>
+                                                        <td ng-bind="val.category"></td>
+                                                        <td ng-bind="val.description"></td>
                                                         <td ng-bind="val.remarks"></td>
-                                                        <td ng-bind="val.adj"></td>
-                                                        <td ng-bind="val.adj_rl"></td>
                                                         <td ng-bind="val.lattitude"></td>
                                                         <td ng-bind="val.longitude"></td>
-                                                        <td ng-bind="val.northing"></td>
-                                                        <td ng-bind="val.easting"></td>
-                                                        <td ng-bind="val.offset_length"></td>
-                                                        <td ng-bind="val.measurement_offset"></td>
-                                                        <td ng-bind="val.measurement_ch"></td>
+                                                        <td ng-bind="val.utm_zone"></td>
+                                                        <td ng-bind="val.latDeg"></td>
+                                                        <td ng-bind="val.latMin"></td>
+                                                        <td ng-bind="val.latSec"></td>
+                                                        <td ng-bind="val.lngDeg"></td>
+                                                        <td ng-bind="val.lngMin"></td>
+                                                        <td ng-bind="val.lngSec"></td>
+                                                        <td ng-bind="val.utm_northing"></td>
+                                                        <td ng-bind="val.utm_easting"></td>
+                                                        <td ng-bind="val.el"></td>
+                                                        <td ng-bind="val.layer_code"></td>
                                                         <td>
                                                             <a href=""><i class="ion-trash-a" ng-click="delete(val.id)"></i></a>&nbsp;
-                                                            <!--<a href=""><i class="ion-edit" ng-click="edit(val)"></i></a>-->
                                                         </td>
                                                 </tr>
 

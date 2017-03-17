@@ -521,18 +521,180 @@
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
 		
-		<div id="add-basic-modal" class="modal fade">
+		<div id="show-measurements-modal" class="modal fade">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                        <h4 class="modal-title" id="custom-width-modalLabel">Add Project</h4>
+                        <h4 class="modal-title" id="custom-width-modalLabel">SUMMARY REPORT</h4>
                     </div>
                     <div class="modal-body">
-                        
-                    </div>
-                    <div class="modal-footer">
-                        
+                        <div class="col-md-12">
+							<table class="table table-bordered table-striped table-condensed">
+								<tr>
+									<th>Date</th>
+									<td>{{measureDataResponse.projectDate}}</td>
+								</tr>
+								<tr>
+									<th>Project Name</th>
+									<td>{{measureDataResponse.project_name}}</td>
+								</tr>
+								<tr>
+									<th>Employee ID</th>
+									<td>{{measureDataResponse.empID}}</td>
+								</tr>
+								<tr>
+									<th>Lattitude</th>
+									<td>{{measureDataResponse.lattitude}}</td>
+								</tr>
+								<tr>
+									<th>Longitude</th>
+									<td>{{measureDataResponse.longitude}}</td>
+								</tr>
+								<tr>
+									<th>N</th>
+									<td>{{measureDataResponse.utm_northing}}</td>
+								</tr>
+								<tr>
+									<th>E</th>
+									<td>{{measureDataResponse.utm_easting}}</td>
+								</tr>
+								<tr>
+									<th>Z</th>
+									<td>{{measureDataResponse.utm_zone}}</td>
+								</tr>
+								<tr>
+									<th>PT No.</th>
+									<td>{{$index + 1}}</td>
+								</tr>
+								<tr>
+									<th colspan="2" align="center" class="success text-center" >Auto Level</th>
+								</tr>
+								<tr>
+									<th>CH</th>
+									<td>{{measureDataResponse.mapping_ch}}</td>
+								</tr>
+								<tr>
+									<th>Offset</th>
+									<td>{{measureDataResponse.measurment_ch}}</td>
+								</tr>
+								<tr>
+									<th>BS</th>
+									<td>{{measureDataResponse.back_site}}</td>
+								</tr>
+								<tr>
+									<th>IS</th>
+									<td>{{measureDataResponse.intermediate_site}}</td>
+								</tr>
+								<tr>
+									<th>FS</th>
+									<td>{{measureDataResponse.forward_site}}</td>
+								</tr>
+								<tr>
+									<th>TBM RL</th>
+									<td>{{measureDataResponse.tbm_rl}}</td>
+								</tr>
+								<tr>
+									<th>Layer Code</th>
+									<td>{{measureDataResponse.layer_code}}</td>
+								</tr>
+								<tr>
+									<th>Category of Layer</th>
+									<td>{{measureDataResponse.category}}</td>
+								</tr>
+								<tr>
+									<th>Description</th>
+									<td>{{measureDataResponse.description}}</td>
+								</tr>
+								<tr>
+									<th>Remarks</th>
+									<td>{{measureDataResponse.remarks}}</td>
+								</tr>
+								<tr class="success">
+									<th colspan="2" align="center" class="success text-center">Reference Map</th>
+								</tr>
+								<tr>
+									<th>Lattitude</th>
+									<td>{{measureDataResponse.lattitude}}</td>
+								</tr>
+								<tr>
+									<th>Longitude</th>
+									<td>{{measureDataResponse.longitude}}</td>
+								</tr>
+								<tr>
+									<th>Zone</th>
+									<td>{{measureDataResponse.utm_zone}}</td>
+								</tr>
+								<tr>
+									<th>D</th>
+									<td>{{GPSDataResponseLat.deg}}</td>
+								</tr>
+								<tr>
+									<th>M</th>
+									<td>{{GPSDataResponseLat.min}}</td>
+								</tr>
+								<tr>
+									<th>S</th>
+									<td>{{GPSDataResponseLat.sec}}</td>
+								</tr>
+								<tr>
+									<th>D</th>
+									<td>{{GPSDataResponseLng.deg}}</td>
+								</tr>
+								<tr>
+									<th>M</th>
+									<td>{{GPSDataResponseLng.min}}</td>
+								</tr>
+								<tr>
+									<th>S</th>
+									<td>{{GPSDataResponseLng.sec}}</td>
+								</tr>
+								<tr>
+									<th>N</th>
+									<td>{{measureDataResponse.utm_northing}}</td>
+								</tr>
+								<tr>
+									<th>E</th>
+									<td>{{measureDataResponse.utm_easting}}</td>
+								</tr>
+								<tr>
+									<th>Z</th>
+									<td>{{measureDataResponse.el}}</td>
+								</tr>
+								<tr>
+									<th>Layer Code</th>
+									<td>{{measureDataResponse.layer_code}}</td>
+								</tr>
+								<tr class="success" >
+									<th colspan="2" align="center" class="success text-center">ETS Co-Ordinate Data</th>
+								</tr>
+								<tr>
+									<th>N</th>
+									<td></td>
+								</tr>
+								<tr>
+									<th>E</th>
+									<td></td>
+								</tr>
+								<tr>
+									<th>Z</th>
+									<td></td>
+								</tr>
+								<tr>
+									<th>Layer Code</th>
+									<td></td>
+								</tr>
+								<tr>
+									<th>Prism Pole. Height</th>
+									<td></td>
+								</tr>
+								<tr>
+									<th>Instrument Height</th>
+									<td></td>
+								</tr>
+							</table>
+						</div>
+						<div class="clearfix"></div>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
