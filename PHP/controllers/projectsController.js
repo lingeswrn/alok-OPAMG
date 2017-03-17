@@ -155,10 +155,6 @@ app.controller("projectsController", function( $scope, project , $location, meas
                     marker,
                     'click', (function(marker, $scope) {
                         return function() {
-                            /* var compiled = $compile(contentString)($scope);
-                            $scope.$apply();
-							infowindow.setContent(compiled[0]);
-                            infowindow.open(map, marker); */
 							$scope.switchForm1 = false;
 							$scope.switchForm2 = true;
 							$scope.$apply();
@@ -254,14 +250,23 @@ app.controller("projectsController", function( $scope, project , $location, meas
         });
     };
     
-    $scope.addMarker = function( list ){
+    $scope.addMarker = function( list ){	
+		marker = [];
         for( i = 0; i < list.length; i++ ) {
             var position = new google.maps.LatLng(list[i]['lattitude'], list[i]['longitude']);
-            marker = new google.maps.Marker({
+            marker[i] = new google.maps.Marker({
                 position: position,
-                icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|'+list[i]['symble'],
-                map: map
+                icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld='+ (i + 1) +'|'+list[i]['symble'],
+                map: map,
+				animation: google.maps.Animation.DROP,
+				id: list[i]['id']
             });
+			//icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|'+list[i]['symble'],
+			(function (i) {
+				google.maps.event.addListener(marker[i], 'click', function () {
+					console.log(marker[i]);
+				});
+			})(i);
         }
     }
     
@@ -380,9 +385,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
 			}
 		}
 	};
-	
-    $scope.addMeasurement = function(){
-		$scope.measure.layer = $scope.layerString.title;
+	$scope.calCoreCal = function(){
 		$scope.measure.backSite = [];
 		$scope.measure.intermediateSite = [];
 		$scope.measure.foreSite = [];
@@ -417,36 +420,54 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		$scope.measure.heightOfInstrument = $scope.calheightOfInstrument( $scope.measure.checkedReduceLevel, $scope.measure.bsOffsetMean, $scope.measure.isOffsetMean);
 		$scope.measure.avgHeightOfInstrument = $scope.measure.heightOfInstrument - $scope.measure.checkedReduceLevel;
 		$scope.measure.adjustmentError = $scope.calAdjustmentError( $scope.measure.tbm_rl, $scope.measure.reduceLevel );
+	}
+	
+    $scope.addMeasurement = function(){
+		$scope.measure.layer = $scope.layerString.title;
+		
 		$scope.measure.id = $scope.project_id;
 		
         var uploadUrl = "server/uploadImage.php";
-		fileUpload.uploadFileToUrl($scope.closeMyFile, uploadUrl).then( function( response ){
-			$scope.measure.close_photograph = response.data;
-		});
-		fileUpload.uploadFileToUrl($scope.LocationMyFile, uploadUrl).then( function( response ){
-			$scope.measure.location_photograph = response.data;
-		});
-		fileUpload.uploadFileToUrl($scope.ScreenMyFile, uploadUrl).then( function( response ){
-			$scope.measure.screen_shot = response.data;
-		});
-		fileUpload.uploadFileToUrl($scope.OtherMyFile, uploadUrl).then( function( response ){
-			$scope.measure.other_photograph = response.data;
-		});
-		
+		console.log($scope.closeMyFile)
+		if( $scope.closeMyFile != undefined ){
+			fileUpload.uploadFileToUrl($scope.closeMyFile, uploadUrl).then( function( response ){
+				$scope.measure.close_photograph = response.data;
+			});
+		}
+		if( $scope.LocationMyFile != undefined ){
+			fileUpload.uploadFileToUrl($scope.LocationMyFile, uploadUrl).then( function( response ){
+				$scope.measure.location_photograph = response.data;
+			});
+		}
+		if( $scope.ScreenMyFile != undefined ){
+			fileUpload.uploadFileToUrl($scope.ScreenMyFile, uploadUrl).then( function( response ){
+				$scope.measure.screen_shot = response.data;
+			});
+		}
+		if( $scope.OtherMyFile != undefined ){
+			fileUpload.uploadFileToUrl($scope.OtherMyFile, uploadUrl).then( function( response ){
+				$scope.measure.other_photograph = response.data;
+			});
+		}
         $scope.measure.action = "add";
         
         $scope.measure.updatedDate = new Date();
 		setTimeout( function(){
 			measurements.commonFun( $scope.measure ).then( function( response ){
-				if( $scope.measure.intermediate_site != 0 ){
+				if( !isNaN($scope.measure.intermediateSite) && $scope.measure.intermediate_site != '' ){
 					$scope.measure = {};
+					$scope.loadMeasurements( $scope.project_id );
 					$scope.switchForm1 = true;
 					$scope.switchForm2 = false;
-					$scope.loadMeasurements( $scope.project_id );
+					$scope.addMeasurementHolder = true;
+					$scope.addMeasurementListHolder = false;
+					
 				}else{
 					$scope.measure = {};
 					$scope.addMeasurementHolder = false;
 					$scope.addMeasurementListHolder = true;
+					$scope.switchForm1 = false;
+					$scope.switchForm2 = true;
 					$scope.loadMeasurements( $scope.project_id ); 
 				}
 				$scope.project_list();
@@ -455,10 +476,6 @@ app.controller("projectsController", function( $scope, project , $location, meas
         
     };
 	$scope.switchProject = function(){
-		/* $scope.measure.layer_name = $('#layer').val();
-		$scope.measure.back_site = $('#back_site').val();
-		$scope.measure.intermediate_site = $('#intermediate_site').val();
-		$scope.measure.fore_site = $('#fore_site').val(); */
 		$scope.switchForm1 = false;
 		$scope.switchForm2 = true;
 	}

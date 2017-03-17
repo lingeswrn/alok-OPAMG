@@ -16,7 +16,7 @@ if( !empty($_SESSION['COMMON_TOKEN'])){
     
     if( $action == "listMeasurement" ){
 		
-        $query = "SELECT measurement.*,layers.symble FROM measurement LEFT OUTER JOIN layers ON layers.code = measurement.layer_code WHERE measurement.status = '1' AND measurement.project_id ='".$data->data->id."'";
+        $query = "SELECT measurement.*,layers.symble FROM measurement LEFT OUTER JOIN layers ON layers.code = measurement.layer_code WHERE measurement.status = '1' AND measurement.project_id ='".$data->data->id."' ORDER BY measurement.id ASC";
         $qryw = $fun->SelectFromTable($query);
 		
         $query_proj = "SELECT * FROM projects WHERE id ='".$data->data->id."'";
