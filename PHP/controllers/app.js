@@ -317,6 +317,21 @@ app.controller("sidebarController", function($scope, $http){
             $("#wrapper").addClass('enlarged');
     } 
     
+	var active = window.location.hash;
+	if( active == '#!/projects'){
+		$scope.activeProject = 'active'
+	}else if( active == '#!/users'){
+		$scope.activeUser = 'active'
+	}else if( active == '#!/roles'){
+		$scope.activeRoles = 'active'
+	}else if( active == '#!/layers'){
+		$scope.activeLayers = 'active'
+	}else if( active == '#!/equipments'){
+		$scope.activeEqui = 'active'
+	}else{
+		$scope.activeProject = 'active'
+	}
+	
 	$http.get('server/getSession.php').then( function( response ){
 		$scope.session_name = response.data.data.USER_NAME;
 	});
