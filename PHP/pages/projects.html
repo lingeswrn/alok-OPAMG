@@ -9,6 +9,13 @@
 		label{
 			font-size: 10px!important;
 		}
+		:-webkit-full-screen, :fullscreen, :-ms-fullscreen, :-moz-full-screen {
+			position: fixed;
+			width: 100%;
+			height: 100%;
+			top: 0; 
+			background: none;
+		}
     </style>   
      <!-- Start content -->
     <div class="content">
@@ -26,7 +33,7 @@
                     <div class="col-sm-12">
                         <div class="panel panel-primary">
 
-                            <div class="panel-body">
+                            <div class="panel-body" ng-show="addMeasurementListHolder">
                                 <div class="row">
                                     <div class="col-sm-12 col-xs-12">
                                         <div class="row">
@@ -34,11 +41,11 @@
                                                 <div class="panel panel-primary">
                                                     <div class="panel-body">
                                                         <h4 class="m-b-30 m-t-0">Projects List</h4>
-														<a href="" class="pull-right btn btn-info" ng-click="exportToCSV()">Export to CSV</a>
-														<br>
-														<br>
-                                                        <a href="" class="pull-right btn btn-info" data-toggle="modal" data-target="#add-project-modal">Add Project</a>
-                                                        <div class="row" ng-show="addMeasurementListHolder">
+														<div ng-show="addMeasurementListHolder" class="pull-right">
+															<a href="" class="btn btn-sm btn-info" ng-click="exportToCSV()">Export to CSV</a>
+															<a href="" class="btn btn-sm btn-info" data-toggle="modal" data-target="#add-project-modal">Add Project</a>
+														</div>
+                                                        <div class="row">
                                                             <div class="col-xs-12">
                                                                 <div class="table-responsive">
                                                                     <table class="table" id="projects">
@@ -90,306 +97,332 @@
                                 </div>
                                 <!-- end row -->
                             </div>
-							<div class="" ng-show="addMeasurementHolder">
-                            <h4 class="{{class}}">{{message}}</h4>  
-								<form style="overflow: hidden;">
-										<div class="form-group col-sm-3">
-											<label>Latitude(D, M, S)</label>
-											<input 
-												class="form-control" 
-												type="text" 
-												placeholder="Latitude"
-												ng-model="measure.latitudeDMS"
-												name="latitude"
-												autocomplete="off"
-												required
-												id="lat"
-												disabled
-											>
-										</div>
-										<div class="form-group col-sm-3">
-											<label>Longitude(D, M, S)</label>
-											<input 
-												class="form-control" 
-												type="text" 
-												placeholder="Longitude"
-												ng-model="measure.longitudeDMS"
-												name="longitude"
-												autocomplete="off"
-												required
-												id="lng"
-												disabled
-											>
-										</div>
-										<div class="form-group col-sm-3">
-											<label>Northing</label>
-											<input 
-												class="form-control" 
-												type="text" 
-												placeholder="Northing"
-												ng-model="measure.northing"
-												name="northing"
-												autocomplete="off"
-												required
-												disabled
-											>
-										</div>
-										<div class="form-group col-sm-3">
-											<label>Easting</label>
-											<input 
-												class="form-control" 
-												type="text" 
-												placeholder="Easting"
-												ng-model="measure.easting"
-												name="easting"
-												autocomplete="off"
-												required
-												disabled
-											>
-										</div>	
-								</form>
-								<form name="opamgForm" ng-show="switchForm1">  
-										<div id="map_canvas" style="height: 500px;position: relative;/* overflow: hidden; */"></div>
-								</form>
-								<form name="opamgForm1" ng-show="switchForm2">
-										<div class='form-group col-sm-3'>
-											<label>Mapping CH</label>
-											<input 
-												class='form-control' 
-												ng-model='measure.ch' 
-												placeholder='Mapping CH' 
-												disabled
-											>
-										</div>
-										<div class='form-group col-sm-3'>
-											<label>Measurment CH</label>
-											<input 
-												class='form-control' 
-												ng-model='measure.measurement_ch' 
-												placeholder='Measurment CH' 
-												disabled
-											>
-										</div>
-										<div class='form-group col-sm-3'>
-											<label>GPS Offset Length</label>
-											<input 
-												class='form-control' 
-												ng-model='measure.gps_offset_length' 
-												placeholder='GPS Offset Length' 
-												disabled
-											>
-										</div>
-										<div class='form-group col-sm-3'>
-											<label>N offset, E offset</label>
-											<input 
-												class='form-control' 
-												ng-model='measure.n_offset' 
-												placeholder="N offset"
-												disabled style='height: 20px;'>
-											<input
-												class='form-control' 
-												ng-model='measure.e_offset' 
-												placeholder="E offset"
-												disabled style='height: 19px;'>
-										</div>
-										<div class='form-group col-sm-6'>
-											<input 
-												class='form-control'  
-												ng-model='measure.lSection' 
-												placeholder='L-Section Offset'
-												ng-blur="calMeasurementCH()"
-												required>
-										</div>
-										<div class='form-group col-sm-6'>
-											<input 
-												class='form-control'
-												ng-model='measure.xSection' 
-												placeholder='X-Section Offset' 
-												ng-blur="calMeasurementCH()"
-												required>
-										</div>
-										<div class='form-group col-sm-12'>
-											<angucomplete-alt id='members'placeholder='Search Layers'pause='400'selected-object='layerString' remote-url='server/getLayers.php?s='remote-url-data-field='data'title-field='code'description-field='description'minlength='1'input-class='form-control form-control-small' ng-model='measure.layer_name'/>
-										</div>
-										<div class='form-group col-sm-12'>
-											<select class="form-control" ng-model="measure.number">
-												<option value="1">1</option>
-												<option value="3">3</option>
-											</select>
-										</div>
-										<div class='form-group col-sm-4' ng-repeat=" i in [] | range:measure.number">
-											<input 
-												class="form-control" 
-												name="back_site" 
-												placeholder='Back Site' 
-												id="back_site_{{$index + 1}}"
-												required>
-										</div>
-										<div class='form-group col-sm-4' ng-repeat=" i in [] | range:measure.number">
-											<input 
-												class='form-control'  
-												id="intermediate_site_{{$index + 1}}"
-												placeholder='Intermediate Site' 
-												required>
-										</div>
-										<div class='form-group col-sm-4' ng-repeat=" i in [] | range:measure.number">
-											<input 
-												class='form-control' 
-												name='fore_site' 
-												id="fore_site_{{$index + 1}}"
-												placeholder='Fore Site' 
-												required>
-										</div>
-										<div class='form-group col-sm-6'>
-											<input 
-												class='form-control' 
-												name='intermediate_site' 
-												ng-model='measure.dgps' 
-												placeholder='DGPS Filename'>
-										</div>
-										<div class='form-group col-sm-6'>
-											<input 
-												class='form-control' 
-												name='intermediate_site' 
-												ng-model='measure.el'									
-												placeholder='EL'>
-										</div>
-										<div class="text-center">
-											<label>USING EQUIPMENTS LIST & FEUTURES</label>
-										</div>
-										<div class="form-group col-md-4">
-											<select class="form-control" ng-model="measure.equipment" ng-change="readEquipment(measure.equipment)">
-												<option ng-repeat="val in equipmentList" value="{{val}}">{{val.model_number}}</option>
-											</select>
-										</div>
-										<div class="form-group col-md-4">
-											<input 
-												class="form-control" 
-												type="text" 
-												placeholder="LAST CALIBRATION SERVIVE CENTER"
-												ng-model="equipment.last_calibration_service_center"
-												autocomplete="off"
-												ng-disabled="true"
-											>
-										</div>
-										<div class="form-group col-md-4">
-											<input 
-												class="form-control" 
-												type="text" 
-												placeholder="EXPIRY DATE"
-												ng-model="equipment.expiry_date"
-												autocomplete="off"
-												ng-disabled="true"
-											>
-										</div>
-										<div class="form-group col-md-6">
-											<input 
-												class="form-control" 
-												type="text" 
-												placeholder="LEAST COUNT"
-												ng-model="equipment.least_count"
-												autocomplete="off"
-												ng-disabled="true"
-											>
-										</div>
-										<div class="form-group col-md-6">
-											<input 
-												class="form-control" 
-												type="text" 
-												placeholder="OWNER / INCHARGE"
-												ng-model="equipment.owner"
-												autocomplete="off"
-												ng-disabled="true"
-											>
-										</div>
-										<div class="form-group col-md-4">
-											<input 
-												class="form-control" 
-												type="text" 
-												placeholder="Hight of Instrument"
-												ng-model="measure.heightOfInstrument"
-												autocomplete="off"
-												disabled
-											>
-										</div>	
-										<div class="form-group col-md-4">
-											<input 
-												class="form-control" 
-												type="text" 
-												placeholder="ADJ RL"
-												ng-model="measure.adj_rl"
-												autocomplete="off"
-											>
-										</div>	
-										<div class="form-group col-md-4">
-											<input 
-												class="form-control" 
-												type="text" 
-												placeholder="TBM RL"
-												ng-model="measure.tbm_rl"
-												autocomplete="off"
-												ng-blur="calCoreCal()"
-											>
-										</div>
-										<div class="form-group col-md-12">
-											<input 
-												class="form-control" 
-												type="text" 
-												placeholder="Remarks"
-												ng-model="measure.remarks"
-												name="remarks"
-												autocomplete="off"
-											>
-										</div>
-										<div class="form-group col-md-6">
-											<input 
-												class="form-control" 
-												type="text" 
-												placeholder="BS Angle"
-												ng-model="measure.bs_angle"
-												name="remarks"
-												autocomplete="off"
-											>
-										</div>
-										<div class="form-group col-md-6">
-											<input 
-												class="form-control" 
-												type="text" 
-												placeholder="FS Angle"
-												ng-model="measure.fs_angle"
-												name="remarks"
-												autocomplete="off"
-											>
-										</div>
-										<div class="form-group col-md-3">
-											<label>Close Photograph</label>
-											<div class="file-upload">
-												<input type="file" file-model="closeMyFile"/>
+							<div class="panel-body" ng-show="showMeasurements">
+                                <div class="row">
+                                    <div class="col-sm-12 col-xs-12">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="panel panel-primary">
+                                                    <div class="panel-body">
+														<h4 class="m-b-30 m-t-0">Add Measurment</h4>
+														<button type="button" class="btn btn-default waves-effect waves-light btn-sm" ng-click="cancelMeasurement()">Cancel Measurment</button>
+														<div class="" ng-show="addMeasurementHolder">
+															<h4 class="{{class}}">{{message}}</h4>  
+																<form style="overflow: hidden;">
+																		<div class="form-group col-sm-3 col-xs-6">
+																			<label>Latitude(D, M, S)</label>
+																			<input 
+																				class="form-control input-sm" 
+																				type="text" 
+																				placeholder="Latitude"
+																				ng-model="measure.latitudeDMS"
+																				name="latitude"
+																				autocomplete="off"
+																				required
+																				id="lat"
+																				disabled
+																			>
+																		</div>
+																		<div class="form-group col-sm-3 col-xs-6">
+																			<label>Longitude(D, M, S)</label>
+																			<input 
+																				class="form-control input-sm" 
+																				type="text" 
+																				placeholder="Longitude"
+																				ng-model="measure.longitudeDMS"
+																				name="longitude"
+																				autocomplete="off"
+																				required
+																				id="lng"
+																				disabled
+																			>
+																		</div>
+																		<div class="form-group col-sm-3 col-xs-6">
+																			<label>Northing</label>
+																			<input 
+																				class="form-control input-sm" 
+																				type="text" 
+																				placeholder="Northing"
+																				ng-model="measure.northing"
+																				name="northing"
+																				autocomplete="off"
+																				required
+																				disabled
+																			>
+																		</div>
+																		<div class="form-group col-sm-3 col-xs-6">
+																			<label>Easting</label>
+																			<input 
+																				class="form-control input-sm" 
+																				type="text" 
+																				placeholder="Easting"
+																				ng-model="measure.easting"
+																				name="easting"
+																				autocomplete="off"
+																				required
+																				disabled
+																			>
+																		</div>	
+																</form>
+																<a id="map_toggler">Change Map to Fullscreen</a>
+																<form name="opamgForm" ng-show="switchForm1">  
+																		<div id="map_canvas" style="height: 500px;position: relative;/* overflow: hidden; */"></div>
+																</form>
+																<form name="opamgForm1" ng-show="switchForm2">
+																		<div class='form-group col-sm-3 col-xs-6'>
+																			<label>Mapping CH</label>
+																			<input 
+																				class='form-control input-sm' 
+																				ng-model='measure.ch' 
+																				placeholder='Mapping CH' 
+																				ng-disabled="first"
+																			>
+																		</div>
+																		<div class='form-group col-sm-3 col-xs-6'>
+																			<label>Measurment CH</label>
+																			<input 
+																				class='form-control input-sm' 
+																				ng-model='measure.measurement_ch' 
+																				placeholder='Measurment CH' 
+																				ng-disabled="first"
+																			>
+																		</div>
+																		<div class='form-group col-sm-3 col-xs-6'>
+																			<label>GPS Offset Length</label>
+																			<input 
+																				class='form-control input-sm' 
+																				ng-model='measure.gps_offset_length' 
+																				placeholder='GPS Offset Length' 
+																				ng-disabled="first"
+																			>
+																		</div>
+																		<div class='form-group col-sm-3 col-xs-6'>
+																			<label>N offset, E offset</label>
+																			<input 
+																				class='form-control input-sm' 
+																				ng-model='measure.n_offset' 
+																				placeholder="N offset"
+																				ng-disabled="first" style='height: 20px;'>
+																			<input
+																				class='form-control input-sm' 
+																				ng-model='measure.e_offset' 
+																				placeholder="E offset"
+																				ng-disabled="first" style='height: 19px;'>
+																		</div>
+																		<div class='form-group col-sm-6'>
+																			<input 
+																				class='form-control input-sm'  
+																				ng-model='measure.lSection' 
+																				placeholder='L-Section Offset *'
+																				ng-blur="calMeasurementCH()"
+																				required>
+																		</div>
+																		<div class='form-group col-sm-6'>
+																			<input 
+																				class='form-control input-sm'
+																				ng-model='measure.xSection' 
+																				placeholder='X-Section Offset *' 
+																				ng-blur="calMeasurementCH()"
+																				required>
+																		</div>
+																		<div class='form-group col-sm-12'>
+																			<angucomplete-alt id='members'placeholder='Search Layers *'pause='400'selected-object='layerString' remote-url='server/getLayers.php?s='remote-url-data-field='data'title-field='code'description-field='description'minlength='1'input-class='form-control input-sm form-control input-sm-small' ng-model='measure.layer_name' name="layers"/>
+																		</div>
+																		
+																		<div class='col-sm-12'  ng-init="measure.number = 1">
+																			<label>Site Count</label>
+																		</div>
+																		<div class='col-sm-6 col-xs-6'>
+																			<label><input type="radio" ng-model="measure.number" value="1" ng-checked="true">1</label>
+																		</div>
+																		<div class='col-sm-6 col-xs-6'>
+																			<label><input type="radio" ng-model="measure.number" value="3">3</label>
+																		</div>
+																		Note: Any one of BS, IS, FS is Mandatory
+																		<div class='form-group col-sm-4' ng-repeat=" i in [] | range:measure.number" style="position: inherit;">
+																			<input 
+																				class="form-control input-sm" 
+																				name="back_site" 
+																				placeholder='Back Site' 
+																				id="back_site_{{$index + 1}}"
+																				required>
+																		</div>
+																		<div class='form-group col-sm-4' ng-repeat=" i in [] | range:measure.number">
+																			<input 
+																				class='form-control input-sm'  
+																				id="intermediate_site_{{$index + 1}}"
+																				placeholder='Intermediate Site' 
+																				required>
+																		</div>
+																		<div class='form-group col-sm-4' ng-repeat=" i in [] | range:measure.number">
+																			<input 
+																				class='form-control input-sm' 
+																				name='fore_site' 
+																				id="fore_site_{{$index + 1}}"
+																				placeholder='Fore Site' 
+																				required>
+																		</div>
+																		<div class="text-center" ng-init="open = true">
+																			<label>USING EQUIPMENTS LIST & FEUTURES 
+																			<i class="mdi mdi-arrow-down-bold-circle-outline" style="font-size: 20px;" ng-show='open' ng-click=" open = false; close = true "></i>
+																			<i class="mdi mdi-arrow-up-bold-circle-outline" style="font-size: 20px; "ng-show='close' ng-click="open = true; close = false "></i></label>
+																		</div>
+																		<div ng-show="close">
+																			<div class="form-group col-md-4">
+																				<select class="form-control input-sm" ng-model="measure.equipment" ng-change="readEquipment(measure.equipment)">
+																					<option ng-repeat="val in equipmentList" value="{{val.id}}" ng-selected="val.id == previousEquipment">{{val.model_number}}</option>
+																				</select>
+																			</div>
+																			<div class="form-group col-md-4">
+																				<input 
+																					class="form-control input-sm" 
+																					type="text" 
+																					placeholder="LAST CALIBRATION SERVIVE CENTER"
+																					ng-model="equipment.last_calibration_service_center"
+																					autocomplete="off"
+																					ng-disabled="true"
+																				>
+																			</div>
+																			<div class="form-group col-md-4">
+																				<input 
+																					class="form-control input-sm" 
+																					type="text" 
+																					placeholder="EXPIRY DATE"
+																					ng-model="equipment.expiry_date"
+																					autocomplete="off"
+																					ng-disabled="true"
+																				>
+																			</div>
+																			<div class="form-group col-md-6">
+																				<input 
+																					class="form-control input-sm" 
+																					type="text" 
+																					placeholder="LEAST COUNT"
+																					ng-model="equipment.least_count"
+																					autocomplete="off"
+																					ng-disabled="true"
+																				>
+																			</div>
+																			<div class="form-group col-md-6">
+																				<input 
+																					class="form-control input-sm" 
+																					type="text" 
+																					placeholder="OWNER / INCHARGE"
+																					ng-model="equipment.owner"
+																					autocomplete="off"
+																					ng-disabled="true"
+																				>
+																			</div>
+																			
+																			<div class='form-group col-sm-6'>
+																				<input 
+																					class='form-control input-sm' 
+																					name='intermediate_site' 
+																					ng-model='measure.dgps' 
+																					placeholder='DGPS Filename'>
+																			</div>
+																			<div class='form-group col-sm-6'>
+																				<input 
+																					class='form-control input-sm' 
+																					name='intermediate_site' 
+																					ng-model='measure.el'									
+																					placeholder='EL'>
+																			</div>
+																			<div class="form-group col-md-4">
+																				<input 
+																					class="form-control input-sm" 
+																					type="text" 
+																					placeholder="Hight of Instrument"
+																					ng-model="measure.heightOfInstrument"
+																					autocomplete="off"
+																					disabled
+																				>
+																			</div>	
+																			<div class="form-group col-md-4">
+																				<input 
+																					class="form-control input-sm" 
+																					type="text" 
+																					placeholder="ADJ RL"
+																					ng-model="measure.adj_rl"
+																					autocomplete="off"
+																				>
+																			</div>	
+																			<div class="form-group col-md-4">
+																				<input 
+																					class="form-control input-sm" 
+																					type="text" 
+																					placeholder="TBM RL"
+																					ng-model="measure.tbm_rl"
+																					autocomplete="off"
+																				>
+																			</div>
+																			<div class="form-group col-md-12">
+																				<input 
+																					class="form-control input-sm" 
+																					type="text" 
+																					placeholder="Remarks"
+																					ng-model="measure.remarks"
+																					name="remarks"
+																					autocomplete="off"
+																				>
+																			</div>
+																			<div class="form-group col-md-6">
+																				<input 
+																					class="form-control input-sm" 
+																					type="text" 
+																					placeholder="BS Angle"
+																					ng-model="measure.bs_angle"
+																					name="remarks"
+																					autocomplete="off"
+																				>
+																			</div>
+																			<div class="form-group col-md-6">
+																				<input 
+																					class="form-control input-sm" 
+																					type="text" 
+																					placeholder="FS Angle"
+																					ng-model="measure.fs_angle"
+																					name="remarks"
+																					autocomplete="off"
+																				>
+																			</div>
+																			<div class="form-group col-md-3">
+																				<label>Close Photograph</label>
+																				<div class="file-upload">
+																					<input type="file" file-model="closeMyFile"/>
+																				</div>
+																			</div>
+																			<div class="form-group col-md-3">
+																				<label>Location Photograph</label>
+																				<div class="file-upload">
+																					<input type="file" file-model="LocationMyFile"/>
+																				</div>
+																			</div>
+																			<div class="form-group col-md-3">
+																				<label>Screen shot of location</label>
+																				<div class="file-upload">
+																					<input type="file" file-model="ScreenMyFile"/>
+																				</div>
+																			</div>
+																			<div class="form-group col-md-3">
+																				<label>Other Photograph</label>
+																				<div class="file-upload">
+																					<input type="file" file-model="OtherMyFile"/>
+																				</div>
+																			</div>
+																		</div>																		
+																		<div class="form-group col-md-6">
+																			<button type="button" class="btn btn-primary waves-effect waves-light" ng-disabled="opamgForm1.$invalid && layerString.title != '' " ng-click="addMeasurement()">Save changes</button>
+																		</div>
+																	</form>
+																	<div class="clearfix"></div>
+															</div>
+													</div>
+												</div>
 											</div>
 										</div>
-										<div class="form-group col-md-3">
-											<label>Location Photograph</label>
-											<div class="file-upload">
-												<input type="file" file-model="LocationMyFile"/>
-											</div>
-										</div>
-										<div class="form-group col-md-3">
-											<label>Screen shot of location</label>
-											<div class="file-upload">
-												<input type="file" file-model="ScreenMyFile"/>
-											</div>
-										</div>
-										<div class="form-group col-md-3">
-											<label>Other Photograph</label>
-											<div class="file-upload">
-												<input type="file" file-model="OtherMyFile"/>
-											</div>
-										</div>
-										<div class="form-group col-md-6">
-											<button type="button" class="btn btn-primary waves-effect waves-light" ng-disabled="opamgForm1.$invalid" ng-click="addMeasurement()">Save changes</button>
-										</div>
-									</form>
-									<div class="clearfix"></div>
+									</div>
+								</div>
 							</div>
                         </div>
                     </div>
@@ -412,7 +445,7 @@
                         <form class="" name="projectForm">
                             <div class="form-group">
                                 <input 
-                                        class="form-control" 
+                                        class="form-control input-sm" 
                                         type="text" 
                                         placeholder="Company Name"
                                         ng-model="projectData.pro_company_name"
@@ -426,7 +459,7 @@
                             </div>
                             <div class="form-group">
                                 <input 
-                                        class="form-control" 
+                                        class="form-control input-sm" 
                                         type="text" 
                                         placeholder="Project Name"
                                         ng-model="projectData.pro_name"
@@ -440,7 +473,7 @@
                             </div>
                             <div class="form-group">
                                 <input 
-                                        class="form-control" 
+                                        class="form-control input-sm" 
                                         type="text" 
                                         placeholder="Work Order Number"
                                         ng-model="projectData.work_order_number"
@@ -454,7 +487,7 @@
                             </div>
                             <div class="form-group">
                                 <input 
-                                        class="form-control" 
+                                        class="form-control input-sm" 
                                         type="text" 
                                         placeholder="Scope of Work ID No"
                                         ng-model="projectData.scope_of_wrk_id"
@@ -469,7 +502,7 @@
                             
                             <div class="form-group">
                                 <input 
-                                        class="form-control" 
+                                        class="form-control input-sm" 
                                         type="text" 
                                         placeholder="From Place"
                                         ng-model="projectData.pro_from"
@@ -483,7 +516,7 @@
                             </div>
                             <div class="form-group">
                                 <input 
-                                        class="form-control" 
+                                        class="form-control input-sm" 
                                         type="text" 
                                         placeholder="To Place"
                                         ng-model="projectData.pro_to"
@@ -497,7 +530,7 @@
                             </div>
                             <div class="form-group">
                                 <input 
-                                        class="form-control" 
+                                        class="form-control input-sm" 
                                         type="text" 
                                         placeholder="Remarks"
                                         ng-model="projectData.remarks"

@@ -5,7 +5,7 @@ error_reporting(1);
 
 define('DB_SERVER','localhost');
 define('DB_USER','root');
-define('DB_PASS','root');
+define('DB_PASS','');
 define('DB_NAME','alok');
 
 define('COMMON_TOKEN','c4ca4238a0b923820dcc509a6f75849b21232f297a57a5a743894a0e4a801fc3');

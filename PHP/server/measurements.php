@@ -20,9 +20,9 @@ if( !empty($_SESSION['COMMON_TOKEN'])){
         $qryw = $fun->SelectFromTable($query);
 		
         $query_proj = "SELECT * FROM projects WHERE id ='".$data->data->id."'";
-        $proj = $fun->SelectFromTable($query_proj);
-		
+        $proj = $fun->SelectFromTable($query_proj);		
         $last = count($qryw) - 1;
+		
         $response = array(
             'code' => 200,
             'status' => 'OK',
@@ -248,6 +248,17 @@ if( !empty($_SESSION['COMMON_TOKEN'])){
                 'code' => 200,
                 'status' => 'OK',
 				'data' => array( 'measureData' => $measurements, 'projects' => $projectDetails[0] )
+            );
+    }else if( $action == "singleEquipment" ){       
+            $equipementID = $data->data->id;
+
+            $query_equipment = "SELECT * FROM equipments_list WHERE id =".$equipementID;
+			$equipements = $fun->SelectFromTable($query_equipment);	
+			
+            $response = array(
+                'code' => 200,
+                'status' => 'OK',
+				'data' => array( 'equipements' => $equipements[0] )
             );
     }
 }else{

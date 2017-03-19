@@ -12,6 +12,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
 	$scope.switchForm2 = false;
 	$scope.addMeasurementHolder = false;
 	$scope.addMeasurementListHolder = true;
+	$scope.showMeasurements = false;
 		
     $scope.listLayers = function(){ 
         $scope.mappingLayer.action = "list";
@@ -98,9 +99,24 @@ app.controller("projectsController", function( $scope, project , $location, meas
 	function getGeolocation(){
 		if (navigator.geolocation) {
 			var myOptions = {
-			   zoom: 13,
-			   center: new google.maps.LatLng(23.366301, 85.304773),
-			   mapTypeId: google.maps.MapTypeId.ROADMAP
+				zoom: 13,
+				center: new google.maps.LatLng(23.366301, 85.304773),
+				mapTypeId: google.maps.MapTypeId.ROADMAP,
+				mapTypeControl: true,
+				mapTypeControlOptions: {
+					style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+					position: google.maps.ControlPosition.TOP_CENTER
+				},
+				zoomControl: true,
+				zoomControlOptions: {
+					position: google.maps.ControlPosition.LEFT_CENTER
+				},
+				scaleControl: true,
+				streetViewControl: true,
+				streetViewControlOptions: {
+					position: google.maps.ControlPosition.LEFT_TOP
+				},
+				fullscreenControl: true
 			};
 			map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 			var marker = new google.maps.Marker({
@@ -156,9 +172,15 @@ app.controller("projectsController", function( $scope, project , $location, meas
                     marker,
                     'click', (function(marker, $scope) {
                         return function() {
+							if( $scope.previousDataLength != 0 )
+								$scope.first = true;
+							
 							$scope.switchForm1 = false;
 							$scope.switchForm2 = true;
+							$scope.measure.number = 1;
+							document.webkitCancelFullScreen();
 							$scope.$apply();
+							
                         };
                     })(marker, $scope)
                 );
@@ -178,6 +200,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		
 		$scope.addMeasurementHolder = true;
 		$scope.addMeasurementListHolder = false;
+		$scope.showMeasurements = true;
 		
 		$scope.loadMeasurements( id );
         getGeolocation()    
@@ -239,10 +262,12 @@ app.controller("projectsController", function( $scope, project , $location, meas
 				
                 $scope.previousData = response.data.data.previous;				
                 $scope.measurementList = response.data.data.list;
-				
+				$scope.first = true;
+				$scope.previousEquipment = $scope.previousData.equipement_id;
+				$scope.readEquipment($scope.previousEquipment);
 				$scope.measure.n_offset = $scope.calNOffset( $scope.measure.northing, $scope.previousData.utm_northing );
 				$scope.measure.e_offset = $scope.calEOffset( $scope.measure.easting, $scope.previousData.utm_easting );
-				$scope.measure.gps_offset_length = $scope.calGPSOffsetLength( $scope.measure.northing, $scope.measure.easting, $scope.previousData.utm_northing, $scope.previousData.utm_easting, $scope.measure.n_offset, $scope.measure.e_offset);
+				$scope.measure.gps_offset_length = $scope.calGPSOffsetLength( $scope.measure.northing, $scope.measure.easting, $scope.previousData.utm_northing, $scope.previousData.utm_easting, $scope.measure.n_offset, $scope.measure.e_offset);				
 				$scope.measure.ch = $scope.calMappingCh( $scope.measure.n_offset, $scope.measure.gps_offset_length, $scope.previousData.mapping_ch );
 				$scope.addMarker( $scope.measurementList );
 				var keys = Object.keys($scope.previousData);
@@ -366,7 +391,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
 	$scope.calheightOfInstrument = function( checkedReduceLevel, bsOffsetMean, isOffsetMean ){
 		var returnData;
 		returnData = parseFloat(checkedReduceLevel) + ( parseFloat(bsOffsetMean) + parseFloat(isOffsetMean) );
-		return returnData.toFixed(3);
+		return isNaN(returnData.toFixed(3)) ? 0.000 : returnData.toFixed(3);
 	};
 	
 	$scope.calAdjustmentError = function( tbm_rl, reduceLevel){
@@ -434,14 +459,12 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		$scope.measure.avgHeightOfInstrument = $scope.measure.heightOfInstrument - $scope.measure.checkedReduceLevel;
 		$scope.measure.adjustmentError = $scope.calAdjustmentError( $scope.measure.tbm_rl, $scope.measure.reduceLevel );
 	}
-	
-    $scope.addMeasurement = function(){
-		$scope.measure.layer = $scope.layerString.title;
+	$scope.confirmMeasurement = function(){
 		
+		$scope.measure.layer = $scope.layerString.title;		
 		$scope.measure.id = $scope.project_id;
-		
+		$scope.calCoreCal();
         var uploadUrl = "server/uploadImage.php";
-		console.log($scope.closeMyFile)
 		if( $scope.closeMyFile != undefined ){
 			fileUpload.uploadFileToUrl($scope.closeMyFile, uploadUrl).then( function( response ){
 				$scope.measure.close_photograph = response.data;
@@ -467,27 +490,43 @@ app.controller("projectsController", function( $scope, project , $location, meas
         $scope.measure.updatedDate = new Date();
 		setTimeout( function(){
 			measurements.commonFun( $scope.measure ).then( function( response ){
-				if( !isNaN($scope.measure.intermediateSite) && $scope.measure.intermediate_site != '' ){
-					$scope.measure = {};
-					$scope.loadMeasurements( $scope.project_id );
-					$scope.switchForm1 = true;
-					$scope.switchForm2 = false;
-					$scope.addMeasurementHolder = true;
-					$scope.addMeasurementListHolder = false;
-					
-				}else{
-					$scope.measure = {};
-					$scope.addMeasurementHolder = false;
-					$scope.addMeasurementListHolder = true;
-					$scope.switchForm1 = false;
-					$scope.switchForm2 = true;
-					$scope.loadMeasurements( $scope.project_id ); 
-				}
+				
+				$scope.measure = {};
+				$scope.loadMeasurements( $scope.project_id );
+				$scope.switchForm1 = true;
+				$scope.switchForm2 = false;
+				$scope.addMeasurementHolder = true;
+				$scope.addMeasurementListHolder = false;
+				getGeolocation();
 				$scope.project_list();
 			});
-		}, 1000)
-        
+		}, 1000);
+	};
+    $scope.addMeasurement = function(){
+		console.log($scope.measure.equipmentId)
+		console.log($scope.layerString)
+		
+		if( $scope.layerString != undefined && $scope.measure.equipmentId != undefined ){
+			if( $scope.measure.tbm_rl == undefined ){
+				var conf = confirm("TBM RL is Empty. Would you like to continue?");
+				if( conf ){
+					$scope.confirmMeasurement();
+				}
+			}else{
+				$scope.confirmMeasurement();
+			}
+		}else{
+			alert("Please choose layers and Equipment");
+		}
     };
+	
+	$scope.cancelMeasurement = function(){
+		$scope.switchForm1 = false;
+		$scope.switchForm2 = true;
+		$scope.addMeasurementHolder = false;
+		$scope.addMeasurementListHolder = true;
+		$scope.showMeasurements = false;		
+	};
 	$scope.switchProject = function(){
 		$scope.switchForm1 = false;
 		$scope.switchForm2 = true;
@@ -497,7 +536,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		$("#projects").tableToCSV();
 	}
 	
-	$scope.listEquipment = function(){ 
+	$scope.listEquipment = function(){ 		
         $scope.equipent.action = "list";
         equ.commonFun( $scope.equipent ).then( function(response){
             if( response.data.code == '200'){
@@ -510,15 +549,37 @@ app.controller("projectsController", function( $scope, project , $location, meas
 	
 	$scope.readEquipment = function( val ){
 		$scope.equipment = {};
-		var data = angular.fromJson(val);
-		$scope.measure.equipmentId = data.id;
-		$scope.equipment.model_number = data.model_number;
-		$scope.equipment.last_calibration_service_center = data.last_calibration_service_center;
-		$scope.equipment.least_count = data.least_count;
-		$scope.equipment.expiry_date = data.expiry_date;
-		$scope.equipment.owner = data.owner;
-	}
+		$scope.getEquipment = {};
 		
+		$scope.getEquipment.action = 'singleEquipment';
+		$scope.getEquipment.id = val;
+		measurements.commonFun( $scope.getEquipment ).then( function(response){
+            if( response.data.code == '200'){
+				var equipmentData = response.data.data.equipements;			   
+				$scope.measure.equipmentId = equipmentData.id;
+				$scope.equipment.model_number = equipmentData.model_number;
+				$scope.equipment.last_calibration_service_center = equipmentData.last_calibration_service_center;
+				$scope.equipment.least_count = equipmentData.least_count;
+				$scope.equipment.expiry_date = equipmentData.expiry_date;
+				$scope.equipment.owner = equipmentData.owner;
+            }
+        });
+	}
+	
+	$("#map_toggler").click(function() {
+	 // $("#map_canvas").toggleClass("fullscreen")
+	  var elem = document.getElementById("map_canvas");
+		if (elem.requestFullscreen) {
+		  elem.requestFullscreen();
+		} else if (elem.msRequestFullscreen) {
+		  elem.msRequestFullscreen();
+		} else if (elem.mozRequestFullScreen) {
+		  elem.mozRequestFullScreen();
+		} else if (elem.webkitRequestFullscreen) {
+		  elem.webkitRequestFullscreen();
+		}
+	});
+
 	function DDtoDMS(){
 	//Input= xd(long) and yd(lat)
 	//Output = xdd xm xs (long) and ydd ym ys (lat)
