@@ -733,7 +733,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
 	//document.getElementById("UTMeBox1").value = Math.round(10*(x))/10;
 	//document.getElementById("UTMnBox1").value = Math.round(10*y)/10;
 	
-	return {'northing': (10*(x)/10).toFixed(3), 'easting': (10*(y)/10).toFixed(3), 'zone': utmz, 'latitude':{'D': Math.floor(ydd), 'M': ym, 'S': Math.floor(1000*ys)/1000} , 'longitude':{'D': Math.floor(xdd), 'M': xm, 'S': Math.floor(1000*xs)/1000} };
+	return {'northing': (10*(y)/10).toFixed(3), 'easting': (10*(x)/10).toFixed(3), 'zone': utmz, 'latitude':{'D': Math.floor(ydd), 'M': ym, 'S': Math.floor(1000*ys)/1000} , 'longitude':{'D': Math.floor(xdd), 'M': xm, 'S': Math.floor(1000*xs)/1000} };
 	
 				
 }//close Geog to UTM

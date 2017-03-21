@@ -32,7 +32,7 @@
 										<button ng-click="write_to_excel()" class="pull-right btn btn-danger">Export to Excel</button>
 										<h4>Total Entry: {{measureCount}}</h4>
                                         <div class="table-responsive">
-                                            <table class="table table2excel" id="tbExport">
+                                            <table class="table table2excel hide" id="tbExport">
                                                 <thead>
 												<tr style="display:none">
 													<th>DATE</th>													
@@ -112,6 +112,92 @@
                                                 </tr>
 
                                                 </tbody>
+                                            </table>
+											<table class="table table2excel table-bordered" id="tbExport">
+												<tr>
+													<td colspan="4">SURVEY MAPPING LAYERS.</td>
+													<td colspan="6">GPS CO-ORDINATE</td>
+													<td colspan="24">AUTO LEVEL</td>
+													<td></td>
+													<td></td>
+													<td colspan="4">PHOTOGRAPH ATTACHMENT / CAMERA CLICK</td>
+												</tr>
+												<tr>
+													<td rowspan="2">SL NO. ATOMATED</td>
+													<td colspan="3">
+														<table class="table-bordered">
+															<tr>
+																<td colspan="3">SURVEY MAPPING LAYER. </td>
+															</tr>
+															<tr>
+																<td>LAYER CODE</td>
+																<td>CATEGORY OF LIST</td>
+																<td>DESCRIPTION OF LAYER</td>
+															</tr>
+														</table>
+													</td>
+													<td rowspan="2"></td>
+													<td colspan="5">
+														<table class="table-bordered">
+															<tr>
+																<td colspan="5">MAPPING CO-ORDINATE</td>
+															</tr>
+															<tr>
+																<td colspan="5">CONVERTED</td>
+															</tr>
+														</table>
+													</td>
+													<td colspan="3">
+														<table class="table-bordered">
+															<tr>
+																<td colspan="3">CHAINAGE</td>
+															</tr>
+															<tr>
+																<td>MAPPING CH.</td>
+																<td>AUTO LEVEL MESURMENT</td>
+																<td>MESURMENT CH.</td>
+															</tr>
+														</table>
+													</td>
+													<td colspan="3">
+														<table class="table-bordered">
+															<tr>
+																<td colspan="3">OFFSET</td>
+															</tr>
+															<tr>
+																<td>GPS OFFSET LEGTH</td>
+																<td>L-SECTION OFFSET</td>
+																<td>X-SECTION OFFSET</td>
+															</tr>
+														</table>
+													</td>
+													<td colspan="3">
+														<table class="table-bordered">
+															<tr>
+																<td colspan="3">STAFF DISTANCE</td>
+															</tr>
+															<tr>
+																<td>BS</td>
+																<td>IS</td>
+																<td>FS</td>
+															</tr>
+														</table>
+													</td>
+													<td colspan="2">
+														<table class="table-bordered">
+															<tr>
+																<td colspan="2">ANGLE BEARING FROM SIGHT</td>
+															</tr>
+															<tr>
+																<td>BS</td>
+																<td>FS</td>
+															</tr>
+														</table>
+													</td>
+												</tr>
+												<tr>
+													
+												</tr>
                                             </table>
                                         </div>
                                     </div>

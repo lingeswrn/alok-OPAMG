@@ -42,6 +42,7 @@ if( !empty($_SESSION['COMMON_TOKEN'])){
         $input_measurement['mapping_ch'] = $data->data->ch;
         $input_measurement['ch_by_auto_level'] = $data->data->chByAutoLevel;
         $input_measurement['measurment_ch'] = $data->data->measurement_ch;
+        $input_measurement['gps_offset_length'] = $data->data->gps_offset_length;
         $input_measurement['bs_offset'] = $data->data->bsOffset;
         $input_measurement['is_offset'] = $data->data->isOffset;
         $input_measurement['fs_offset'] = $data->data->fsOffset;
@@ -136,6 +137,7 @@ if( !empty($_SESSION['COMMON_TOKEN'])){
 			measurement.mapping_ch,
 			measurement.ch_by_auto_level,
 			measurement.measurment_ch, 
+			measurement.gps_offset_length, 
 			measurement.bs_offset, 
 			measurement.is_offset, 
 			measurement.fs_offset, 
@@ -202,6 +204,7 @@ if( !empty($_SESSION['COMMON_TOKEN'])){
 			measurement.mapping_ch,
 			measurement.ch_by_auto_level,
 			measurement.measurment_ch, 
+			measurement.gps_offset_length, 
 			measurement.bs_offset, 
 			measurement.is_offset, 
 			measurement.fs_offset, 

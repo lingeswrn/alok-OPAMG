@@ -16,6 +16,9 @@
 			top: 0; 
 			background: none;
 		}
+		.panel-body {
+			padding: 9px 6px 2px 5px !important;
+		}
     </style>   
      <!-- Start content -->
     <div class="content">
@@ -104,11 +107,23 @@
                                             <div class="col-md-12">
                                                 <div class="panel panel-primary">
                                                     <div class="panel-body">
-														<h4 class="m-b-30 m-t-0">Add Measurment</h4>
-														<button type="button" class="btn btn-default waves-effect waves-light btn-sm" ng-click="cancelMeasurement()">Cancel Measurment</button>
+														<div class="col-md-12 col-xs-12" style="margin-bottom: -19px;">
+															<div class="col-md-4 col-xs-6">
+																<h4 class="m-b-30 m-t-0">Add Measurment</h4>
+															</div>
+															<div class="col-md-4 col-xs-6">
+																<button type="button" class="btn btn-default waves-effect waves-light btn-sm" ng-click="cancelMeasurement()">Cancel Measurment</button>
+															</div>
+														</div>
+														
+														<div class="col-md-12 col-xs-12 ">
 														<div class="" ng-show="addMeasurementHolder">
-															<h4 class="{{class}}">{{message}}</h4>  
-																<form style="overflow: hidden;">
+															<div class="text-center" ng-init="open = true">
+																<label>Co-Ordinate Measurements
+																<i class="mdi mdi-arrow-down-bold-circle-outline" style="font-size: 20px;" ng-show='open' ng-click=" open = false; close = true "></i>
+																<i class="mdi mdi-arrow-up-bold-circle-outline" style="font-size: 20px; "ng-show='close' ng-click="open = true; close = false "></i></label>
+															</div>
+																<form style="overflow: hidden;" ng-show="close">
 																		<div class="form-group col-sm-3 col-xs-6">
 																			<label>Latitude(D, M, S)</label>
 																			<input 
@@ -164,10 +179,12 @@
 																			>
 																		</div>	
 																</form>
-																<a id="map_toggler">Change Map to Fullscreen</a>
-																<form name="opamgForm" ng-show="switchForm1">  
+																<!--<a id="map_toggler">Change Map to Fullscreen</a>-->
+																<div class="col-md-12 col-xs-12 col-sm-12">
+																	<form name="opamgForm" ng-show="switchForm1">  
 																		<div id="map_canvas" style="height: 500px;position: relative;/* overflow: hidden; */"></div>
-																</form>
+																	</form>
+																</div>
 																<form name="opamgForm1" ng-show="switchForm2">
 																		<div class='form-group col-sm-3 col-xs-6'>
 																			<label>Mapping CH</label>
@@ -209,7 +226,7 @@
 																				placeholder="E offset"
 																				ng-disabled="first" style='height: 19px;'>
 																		</div>
-																		<div class='form-group col-sm-6'>
+																		<div class='form-group col-sm-6 col-xs-6'>
 																			<input 
 																				class='form-control input-sm'  
 																				ng-model='measure.lSection' 
@@ -217,7 +234,7 @@
 																				ng-blur="calMeasurementCH()"
 																				required>
 																		</div>
-																		<div class='form-group col-sm-6'>
+																		<div class='form-group col-sm-6 col-xs-6'>
 																			<input 
 																				class='form-control input-sm'
 																				ng-model='measure.xSection' 
@@ -229,16 +246,18 @@
 																			<angucomplete-alt id='members'placeholder='Search Layers *'pause='400'selected-object='layerString' remote-url='server/getLayers.php?s='remote-url-data-field='data'title-field='code'description-field='description'minlength='1'input-class='form-control input-sm form-control input-sm-small' ng-model='measure.layer_name' name="layers"/>
 																		</div>
 																		
-																		<div class='col-sm-12'  ng-init="measure.number = 1">
-																			<label>Site Count</label>
+																		<div class='col-sm-12 col-xs-12'  ng-init="measure.number = 1">
+																			<div class='col-sm-4 col-xs-4'>
+																				<label>Site Count</label>
+																			</div>
+																			<div class='col-sm-4 col-xs-4'>
+																				<label><input type="radio" ng-model="measure.number" value="1" ng-checked="true">1</label>
+																			</div>
+																			<div class='col-sm-4 col-xs-4'>
+																				<label><input type="radio" ng-model="measure.number" value="3">3</label>
+																			</div>
 																		</div>
-																		<div class='col-sm-6 col-xs-6'>
-																			<label><input type="radio" ng-model="measure.number" value="1" ng-checked="true">1</label>
-																		</div>
-																		<div class='col-sm-6 col-xs-6'>
-																			<label><input type="radio" ng-model="measure.number" value="3">3</label>
-																		</div>
-																		Note: Any one of BS, IS, FS is Mandatory
+																		
 																		<div class='form-group col-sm-4' ng-repeat=" i in [] | range:measure.number" style="position: inherit;">
 																			<input 
 																				class="form-control input-sm" 
@@ -417,6 +436,7 @@
 																	</form>
 																	<div class="clearfix"></div>
 															</div>
+														</div>
 													</div>
 												</div>
 											</div>
