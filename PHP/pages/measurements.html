@@ -29,10 +29,14 @@
                                 
                                 <div class="row">                                    
                                     <div class="col-sm-12 col-xs-12">
-										<button ng-click="write_to_excel()" class="pull-right btn btn-danger">Export to Excel</button>
+										<div class="pull-right">
+											<button ng-click="write_to_excel()" class="pull-right btn btn-danger btn-sm">Export Report</button>
+											<button ng-click="write_to_datasheet()" class="pull-right btn btn-danger  btn-sm">Export Datasheet</button>
+										</div>
 										<h4>Total Entry: {{measureCount}}</h4>
                                         <div class="table-responsive">
-                                            <table class="table table2excel hide" id="tbExport">
+											<h4>Report</h4>
+                                            <table class="table table2excel table-bordered" id="tbExport">
                                                 <thead>
 												<tr style="display:none">
 													<th>DATE</th>													
@@ -113,15 +117,8 @@
 
                                                 </tbody>
                                             </table>
-											<table class="table table2excel table-bordered" id="tbExport">
-												<tr>
-													<td colspan="4">SURVEY MAPPING LAYERS.</td>
-													<td colspan="6">GPS CO-ORDINATE</td>
-													<td colspan="24">AUTO LEVEL</td>
-													<td></td>
-													<td></td>
-													<td colspan="4">PHOTOGRAPH ATTACHMENT / CAMERA CLICK</td>
-												</tr>
+											<table class="table table-bordered hide" id="tbExport">
+												
 												<tr>
 													<td>SL NO. ATOMATED</td>
 													<td colspan="3">
@@ -136,7 +133,6 @@
 															</tr>
 														</table>
 													</td>
-													<td rowspan="2"></td>
 													<td colspan="5">
 														<table class="table-bordered">
 															<tr>
@@ -220,24 +216,90 @@
 															</tr>
 														</table>
 													</td>
-													<td rowspan="2">AVG. HIGHT OF INSTRUMENT FROM GL.</td>
-													<td rowspan="2">HIGHT OF INSTRUMENT</td>
-													<td rowspan="2">CALCULATED REDUCE RL</td>
-													<td rowspan="2">CHECKED REDUCE LEVEL</td>
-													<td rowspan="2">REMARKS</td>
-													<td rowspan="2">ADJUSTMENT ERROR</td>
-													<td rowspan="2">TBM RL</td>
-													<td rowspan="2">CLOSE PHOTOGRAPH</td>
-													<td rowspan="2">LOCATION PHOTOGRAPH</td>
-													<td rowspan="2">SCREEN SHOT OF LOCATION </td>
-													<td rowspan="2">OTHER PHOTGRAPH</td>
+													<td colspan="2">
+														<table class="table-bordered">
+															<tr>
+																<td>AVG. HIGHT OF INSTRUMENT FROM GL.</td>
+															</tr>
+														</table>
+													</td>
+													<td colspan="2">
+														<table class="table-bordered">
+															<tr>
+																<td>HIGHT OF INSTRUMENT</td>
+															</tr>
+														</table>
+													</td>
+													<td colspan="2">
+														<table class="table-bordered">
+															<tr>
+																<td>CALCULATED REDUCE RL</td>
+															</tr>
+														</table>
+													</td>
+													<td colspan="2">
+														<table class="table-bordered">
+															<tr>
+																<td>CHECKED REDUCE LEVEL</td>
+															</tr>
+														</table>
+													</td>
+													<td colspan="2">
+														<table class="table-bordered">
+															<tr>
+																<td>REMARKS</td>
+															</tr>
+														</table>
+													</td>
+													<td colspan="2">
+														<table class="table-bordered">
+															<tr>
+																<td>ADJUSTMENT ERROR</td>
+															</tr>
+														</table>
+													</td>
+													<td colspan="2">
+														<table class="table-bordered">
+															<tr>
+																<td>TBM RL</td>
+															</tr>
+														</table>
+													</td>
+													<td colspan="2">
+														<table class="table-bordered">
+															<tr>
+																<td>CLOSE PHOTOGRAPH</td>
+															</tr>
+														</table>
+													</td>
+													<td colspan="2">
+														<table class="table-bordered">
+															<tr>
+																<td>LOCATION PHOTOGRAPH</td>
+															</tr>
+														</table>
+													</td>
+													<td colspan="2">
+														<table class="table-bordered">
+															<tr>
+																<td>SCREEN SHOT OF LOCATION</td>
+															</tr>
+														</table>
+													</td>
+													<td colspan="2">
+														<table class="table-bordered">
+															<tr>
+																<td>OTHER PHOTGRAPH</td>
+															</tr>
+														</table>
+													</td>
 												</tr>
-												<tr>
-													<td rowspan="6">1</td>
-													<td rowspan="6">OCC</td>
-													<td rowspan="6">Survey field</td>
-													<td rowspan="6">Survey descr</td>
-													<td rowspan="2">
+												<tr ng-repeat="val in measurementList">
+													<td>{{$index + 1}}</td>
+													<td>OCC</td>
+													<td>Survey field</td>
+													<td>Survey descr</td>
+													<td>
 														<table class="table-bordered">
 															<tr>
 																<td>fdfdfds</td>
@@ -353,7 +415,7 @@
 													<td>
 														0
 													</td>
-													<td colspan="3">
+													<td>
 														<table class="table-bordered">
 															<tr>
 																<td colspan="3">OFFSET</td>
@@ -369,7 +431,7 @@
 															</tr>
 														</table>
 													</td>
-													<td colspan="2">
+													<td>
 														<table class="table-bordered">
 															<tr>
 																<td colspan="2">ANGLE</td>
@@ -386,7 +448,7 @@
 															</tr>
 														</table>
 													</td>
-													<td colspan="6">
+													<td>
 														<table class="table-bordered">
 															<tr>
 																<td colspan="6">STAFF READING</td>
@@ -421,7 +483,7 @@
 															</tr>
 														</table>
 													</td>
-													<td rowspan="6">
+													<td>
 														<table class="table-bordered">
 															<tr rowspan="6">
 																<td>1.650</td>
@@ -429,8 +491,195 @@
 															</tr>
 														</table>
 													</td>
+													<td>
+														<table class="table-bordered">
+															<tr rowspan="6">
+																<td>1.650</td>
+															</tr>
+														</table>
+													</td>
+													<td>
+														<table class="table-bordered">
+															<tr rowspan="6">
+																<td>201.650</td>
+															</tr>
+														</table>
+													</td>
+													<td>
+														<table class="table-bordered">
+															<tr rowspan="6">
+																<td>200.000</td>
+															</tr>
+														</table>
+													</td>
+													<td>
+														<table class="table-bordered">
+															<tr rowspan="6">
+																<td>200.000</td>
+															</tr>
+														</table>
+													</td>
+													<td>
+														<table class="table-bordered">
+															<tr rowspan="6">
+																<td>TBM-C85 ON THE HOUSE WALL OF THE ROAD R/S</td>
+															</tr>
+														</table>
+													</td>
+													<td>
+														<table class="table-bordered">
+															<tr rowspan="6">
+																<td>0.0000</td>
+															</tr>
+														</table>
+													</td>
+													<td>
+														<table class="table-bordered">
+															<tr rowspan="6">
+																<td>200.000</td>
+															</tr>
+														</table>
+													</td>
+													<td>
+														<table class="table-bordered">
+															<tr rowspan="6">
+																<td></td>
+															</tr>
+														</table>
+													</td>
+													<td>
+														<table class="table-bordered">
+															<tr rowspan="6">
+																<td></td>
+															</tr>
+														</table>
+													</td>
+													<td>
+														<table class="table-bordered">
+															<tr rowspan="6">
+																<td></td>
+															</tr>
+														</table>
+													</td>
+													<td>
+														<table class="table-bordered">
+															<tr rowspan="6">
+																<td></td>
+															</tr>
+														</table>
+													</td>
 												</tr>
                                             </table>
+											<h4>Data Sheet</h4>
+											<table class="table table2datasheet table-bordered" id="tbExport">
+												
+												<tr>
+													<td>SL NO. ATOMATED</td>
+													<td>LAYER CODE</td>
+													<td>CATEGORY OF LIST</td>
+													<td>DESCRIPTION OF LAYER</td>
+													<td>Lat D, M, S</td>
+													<td>Long D, M, S</td>
+													<td>Lattitude</td>
+													<td>Longitude</td>
+													<td>UTM Zone</td>
+													<td>UTM Easting</td>
+													<td>UTM Northing</td>
+													<td>EL</td>
+													<td>Mapping CH.</td>
+													<td>AUTO LEVE MESURMENT</td>
+													<td>MESURMENT CH.</td>
+													<td>N + Offset</td>
+													<td>E + Offset</td>
+													<td>GPS OFFSET LENGTH</td>
+													<td>L-SECTION OFFSET</td>
+													<td>X-SECTION OFFSET</td>
+													<td>BS OFFSET</td>
+													<td>IS OFFSET</td>
+													<td>FS OFFSET</td>
+													<td>OFFSET RESULT</td>
+													<td>BS ANGLE</td>
+													<td>FS ANGLE</td>
+													<td>BACK SITE</td>
+													<td>SUM</td>
+													<td>MEAN</td>
+													<td>READING ERROR</td>
+													<td>INTERGRATED SITE</td>
+													<td>SUM</td>
+													<td>MEAN</td>
+													<td>READING ERROR</td>
+													<td>FORWARD SITE</td>
+													<td>SUM</td>
+													<td>MEAN</td>
+													<td>READING ERROR</td>
+													<td>RISE +</td>
+													<td>FALL -</td>
+													<td>AVG. HIGHT OF INSTRUMENT FROM GL.</td>
+													<td>HIGHT OF INSTRUMENT</td>
+													<td>CALCULATED REDUCE RL</td>
+													<td>CHECKED REDUCE LEVEL</td>
+													<td>REMARKS</td>
+													<td>ADJUSTMENT ERROR</td>
+													<td>TBM RL</td>
+													<td>CLOSE PHOTOGRAPH</td>
+													<td>LOCATION PHOTOGRAPH</td>
+													<td>SCREEN SHOT OF LOCATION </td>
+													<td>OTHER PHOTGRAPH</td>
+												</tr>
+												<tr ng-repeat="val in measurementList">
+													<td>{{$index+1}}</td>
+													<td ng-bind="val.layer_code"></td>
+													<td ng-bind="val.category"></td>
+													<td ng-bind="val.description"></td>
+													<td>{{val.latDeg}}, {{val.latMin}}, {{val.latSec}}</td>
+													<td>{{val.lngDeg}}, {{val.lngMin}}, {{val.lngSec}}</td>
+													<td ng-bind="val.lattitude"></td>
+													<td ng-bind="val.longitude"></td>
+													<td ng-bind="val.utm_zone"></td>
+													<td ng-bind="val.utm_easting"></td>
+													<td ng-bind="val.utm_northing"></td>
+													<td ng-bind="val.el"></td>
+													<td ng-bind="val.mapping_ch"></td>
+													<td ng-bind="val.ch_by_auto_level"></td>
+													<td ng-bind="val.measurment_ch"></td>
+													<td ng-bind="val.n_offset"></td>
+													<td ng-bind="val.e_offset"></td>
+													<td ng-bind="val.gps_offset_length"></td>
+													<td ng-bind="val.l_section_offset"></td>
+													<td ng-bind="val.x_section_offset"></td>
+													<td ng-bind="val.bs_offset"></td>
+													<td ng-bind="val.is_offset"></td>
+													<td ng-bind="val.fs_offset"></td>
+													<td ng-bind="val.offset_result"></td>
+													<td ng-bind="val.bs_angle"></td>
+													<td ng-bind="val.fs_angle"></td>
+													<td ng-bind="val.back_site"></td>
+													<td ng-bind="val.bs_sum"></td>
+													<td ng-bind="val.bs_mean"></td>
+													<td ng-bind="val.bs_reading_error"></td>
+													<td ng-bind="val.intermediate_site"></td>
+													<td ng-bind="val.is_sum"></td>
+													<td ng-bind="val.is_mean"></td>
+													<td ng-bind="val.is_reading_error"></td>
+													<td ng-bind="val.forward_site"></td>
+													<td ng-bind="val.fs_sum"></td>
+													<td ng-bind="val.fs_mean"></td>
+													<td ng-bind="val.fs_reading_error"></td>
+													<td ng-bind="val.rise_plus"></td>
+													<td ng-bind="val.fall_minus"></td>
+													<td ng-bind="val.avg_hight_of_instrument_from_gl"></td>
+													<td ng-bind="val.hight_of_instrument"></td>
+													<td ng-bind="val.calculated_reduce_rl"></td>
+													<td ng-bind="val.checked_reduce_level"></td>
+													<td ng-bind="val.remarks"></td>
+													<td ng-bind="val.adjustment_error"></td>
+													<td ng-bind="val.tbm_rl"></td>
+													<td><img src="{{val.close_photograph}}" style="width: 83px;"></td>
+													<td><img src="{{val.location_photograph}}"  style="width: 83px;"></td>
+													<td><img src="{{val.screen_shot}}"  style="width: 83px;"></td>
+													<td><img src="{{val.other_photograph}}"  style="width: 83px;"></td>
+												</tr>
+											</table>
                                         </div>
                                     </div>
                                 </div>

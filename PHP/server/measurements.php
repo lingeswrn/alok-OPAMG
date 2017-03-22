@@ -242,8 +242,72 @@ if( !empty($_SESSION['COMMON_TOKEN'])){
 					$type = $gpsReadings[$j]['type'];
 					$measurements[$i][$type. 'Deg'] = $gpsReadings[$j]['deg'];
 					$measurements[$i][$type. 'Min'] = $gpsReadings[$j]['min'];
-					$measurements[$i][$type. 'Sec'] = $gpsReadings[$j]['sec'];
+					$measurements[$i][$type. 'Sec'] = $gpsReadings[$j]['sec'];					
 				}
+				
+				$measurements[$i]['offset_result'] = $measurements[$i]['bs_offset'] + $measurements[$i]['is_offset'] + $measurements[$i]['fs_offset'];
+					
+					$explodeBS = explode(',', $measurements[$i]['back_site']);
+					$bsSum = 0;
+					for( $j=0; $j < count($explodeBS); $j++){
+						$bsSum += $explodeBS[$j];
+					}
+					$measurements[$i]['bs_sum'] = $bsSum;
+					$measurements[$i]['bs_mean'] = $bsSum/count($explodeBS);
+					
+					$explodeIS = explode(',', $measurements[$i]['intermediate_site']);
+					$IsSum = 0;
+					for( $q=0; $q < count($explodeIS); $q++){
+						$IsSum += $explodeIS[$q];
+					}
+					$measurements[$i]['is_sum'] = $IsSum;
+					$measurements[$i]['is_mean'] = $IsSum/count($explodeIS);
+					
+					$explodeFS = explode(',', $measurements[$i]['forward_site']);
+					$FsSum = 0;
+					for( $q=0; $q < count($explodeFS); $q++){
+						$FsSum += $explodeFS[$q];
+					}
+					$measurements[$i]['fs_sum'] = $FsSum;
+					$measurements[$i]['fs_mean'] = $FsSum/count($explodeFS);
+					
+					if( $explodeBS[0] > 0 && $explodeBS[2] > 0 ){
+						$measurements[$i]['bs_reading_error'] = ($explodeBS[0] - $explodeBS[1])-($explodeBS[1] - $explodeBS[2]);
+					}else{
+						$measurements[$i]['bs_reading_error'] = 0;
+					}
+					
+					if( $explodeIS[0] > 0 && $explodeIS[2] > 0 ){
+						$measurements[$i]['is_reading_error'] = ($explodeIS[0] - $explodeIS[1])-($explodeIS[1] - $explodeIS[2]);
+					}else{
+						$measurements[$i]['is_reading_error'] = 0;
+					}
+					if( $explodeFS[0] > 0 && $explodeFS[2] > 0 ){
+						$measurements[$i]['fs_reading_error'] = ($explodeFS[0] - $explodeFS[1])-($explodeFS[1] - $explodeFS[2]);
+					}else{
+						$measurements[$i]['fs_reading_error'] = 0;
+					}
+					
+					if( $measurements[$i]['close_photograph'] != '' ){
+						$measurements[$i]['close_photograph'] = 'server/uploads/'. $measurements[$i]['close_photograph'];
+					}else{
+						$measurements[$i]['close_photograph'] = 'assets/images/no_img.jpg';
+					}
+					if( $measurements[$i]['location_photograph'] != '' ){
+						$measurements[$i]['location_photograph'] = 'server/uploads/'. $measurements[$i]['location_photograph'];
+					}else{
+						$measurements[$i]['location_photograph'] = 'assets/images/no_img.jpg';
+					}
+					if( $measurements[$i]['screen_shot'] != '' ){
+						$measurements[$i]['screen_shot'] = 'server/uploads/'. $measurements[$i]['screen_shot'];
+					}else{
+						$measurements[$i]['screen_shot'] = 'assets/images/no_img.jpg';
+					}
+					if( $measurements[$i]['other_photograph'] != '' ){
+						$measurements[$i]['other_photograph'] = 'server/uploads/'. $measurements[$i]['other_photograph'];
+					}else{
+						$measurements[$i]['other_photograph'] = 'assets/images/no_img.jpg';
+					}
 			}
 			
 			$projectDetails = $fun->SelectFromTable('SELECT * FROM projects WHERE id ='.$projectId);

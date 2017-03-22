@@ -46,6 +46,18 @@ app.controller("measurementsController", function( $scope, measurements, $routeP
 					exclude_inputs: true
 				});
 	}
+	
+	$scope.write_to_datasheet = function() {
+		$(".table2datasheet").table2excel({
+					exclude: ".noExl",
+					name: "OPAMG",
+					filename: "OPAMG",
+					fileext: ".xls",
+					exclude_img: true,
+					exclude_links: true,
+					exclude_inputs: true
+				});
+	}
 
     $scope.loadMeasurements( $scope.project_id );
     
