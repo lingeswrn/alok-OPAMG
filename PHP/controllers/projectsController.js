@@ -239,7 +239,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
 	$scope.calGPSOffsetLength = function( currentNorthing, currentEasting, previousNorthing, previousEasting, currentNOffset, currentEOffset ){
 		var returnData;
 		
-		if( currentNOffset > 0 || currentEOffset > 0){
+		if( currentNOffset > 0 && currentEOffset > 0){
 			returnData = Math.pow(Math.pow(( parseFloat(currentEasting) - parseFloat(previousEasting)),2) + Math.pow((parseFloat(currentNorthing) - parseFloat(previousNorthing)),2),0.5);
 		}else{
 			returnData = 0;
