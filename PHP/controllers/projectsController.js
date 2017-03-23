@@ -222,7 +222,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		}else{
 			returnData = 0;
 		}
-		return returnData.toFixed(3);
+		return Math.round(returnData.toFixed(3));
 	};
 	
 	$scope.calEOffset = function( currentEasting, previousEasting ){
@@ -233,7 +233,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		}else{
 			returnData = 0;
 		}
-		return returnData.toFixed(3);
+		return Math.round(returnData.toFixed(3));
 	};
 	
 	$scope.calGPSOffsetLength = function( currentNorthing, currentEasting, previousNorthing, previousEasting, currentNOffset, currentEOffset ){
