@@ -125,9 +125,13 @@ app.controller("projectsController", function( $scope, project , $location, meas
 				map: map
 			});	
 		  navigator.geolocation.getCurrentPosition(function(position) {
-			var pos = {
+			/* var pos = {
 			  lat: position.coords.latitude,
 			  lng: position.coords.longitude
+			}; */
+			var pos = {
+			  lat: 23.365040329263,
+			  lng: 85.345285084961
 			};
 			marker.setPosition(pos);
 			map.panTo(pos);
@@ -137,41 +141,24 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		
     
 		  // intercept map and marker movements
-		google.maps.event.addListener(map, "idle", function() {
+		google.maps.event.addListener(map, "idle", function( res ) {
 			//marker.setPosition(map.getCenter());
-			var latitude = map.getCenter().lat();
-			var longitude = map.getCenter().lng();
-			$scope.value = GeogToUTM(map.getCenter());
-			$scope.measure.latitude = latitude;
-			$scope.measure.longitude = longitude
-			
-			$scope.measure.latitudeDMS = $scope.value.latitude.D +", "+ $scope.value.latitude.M +", "+$scope.value.latitude.S;
-			$scope.measure.longitudeDMS = $scope.value.longitude.D +", "+ $scope.value.longitude.M +", "+$scope.value.longitude.S;
-			$scope.measure.easting = $scope.value.easting;
-			$scope.measure.northing = $scope.value.northing;
-			$scope.measure.zone = $scope.value.zone;
-			$scope.$apply();
+			console.log(map)
+			console.log(res)
+			//getCoOrdinates(map);
 			google.maps.event.trigger(map, "resize");
 		});
-		google.maps.event.addListener(marker, "dragend", function(mapEvent) {
-			var latitude = mapEvent.latLng.lat();
-			var longitude = mapEvent.latLng.lng();
-			
-			$scope.value = GeogToUTM(mapEvent.latLng);
-			$scope.measure.latitude = latitude;
-			$scope.measure.longitude = longitude
-			$scope.measure.latitudeDMS = $scope.value.latitude.D +", "+ $scope.value.latitude.M +", "+$scope.value.latitude.S;
-			$scope.measure.longitudeDMS = $scope.value.longitude.D +", "+ $scope.value.longitude.M +", "+$scope.value.longitude.S;
-			$scope.measure.easting = $scope.value.easting;
-			$scope.measure.northing = $scope.value.northing;
-			$scope.measure.zone = $scope.value.zone;
-			$scope.$apply();
+		google.maps.event.addListener(marker, "dragend", function(mapEvent) {	
+			getCoOrdinates(mapEvent);
 			map.panTo(mapEvent.latLng);
 		}); 
 				google.maps.event.addListener(
                     marker,
                     'click', (function(marker, $scope) {
-                        return function() {
+                        return function( res ) {
+							
+							getCoOrdinates(res);
+							
 							if( $scope.previousDataLength != 0 )
 								$scope.first = true;
 							
@@ -191,6 +178,27 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		}
 	}    
     
+	function getCoOrdinates(res){
+		console.log(res)
+		var latitude = res.latLng.lat();
+		var longitude = res.latLng.lng();	
+
+		$scope.value = GeogToUTM(res.latLng);
+		$scope.measure.latitude = latitude;
+		$scope.measure.longitude = longitude
+		$scope.measure.latitudeDMS = $scope.value.latitude.D +", "+ $scope.value.latitude.M +", "+$scope.value.latitude.S;
+		$scope.measure.longitudeDMS = $scope.value.longitude.D +", "+ $scope.value.longitude.M +", "+$scope.value.longitude.S;
+		$scope.measure.easting = $scope.value.easting;
+		$scope.measure.northing = $scope.value.northing;
+		$scope.measure.zone = $scope.value.zone;
+		
+		$scope.measure.n_offset = $scope.calNOffset( $scope.measure.northing, $scope.previousData.utm_northing );
+		$scope.measure.e_offset = $scope.calEOffset( $scope.measure.easting, $scope.previousData.utm_easting );
+		$scope.measure.gps_offset_length = $scope.calGPSOffsetLength( $scope.measure.northing, $scope.measure.easting, $scope.previousData.utm_northing, $scope.previousData.utm_easting, $scope.measure.n_offset, $scope.measure.e_offset);				
+		$scope.measure.ch = $scope.calMappingCh( $scope.measure.n_offset, $scope.measure.gps_offset_length, $scope.previousData.mapping_ch );
+		$scope.$apply();
+	};
+	
 	$scope.addBasic = function( id ){
 		
 		$scope.switchForm1 = true;
@@ -208,6 +216,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
 	
 	$scope.calNOffset = function( currentNorthing, previousNorthing ){
 		var returnData;
+		
 		if( currentNorthing > 0 ){
 			returnData = parseFloat(currentNorthing) - parseFloat(previousNorthing);
 		}else{
@@ -218,6 +227,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
 	
 	$scope.calEOffset = function( currentEasting, previousEasting ){
 		var returnData;
+		
 		if( currentEasting > 0 ){
 			returnData = parseFloat(currentEasting) - parseFloat(previousEasting);
 		}else{
@@ -228,7 +238,8 @@ app.controller("projectsController", function( $scope, project , $location, meas
 	
 	$scope.calGPSOffsetLength = function( currentNorthing, currentEasting, previousNorthing, previousEasting, currentNOffset, currentEOffset ){
 		var returnData;
-		if( currentNOffset > 0 && currentEOffset > 0){
+		
+		if( currentNOffset > 0 || currentEOffset > 0){
 			returnData = Math.pow(Math.pow(( parseFloat(currentEasting) - parseFloat(previousEasting)),2) + Math.pow((parseFloat(currentNorthing) - parseFloat(previousNorthing)),2),0.5);
 		}else{
 			returnData = 0;
@@ -264,11 +275,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
                 $scope.measurementList = response.data.data.list;
 				$scope.first = true;
 				$scope.previousEquipment = $scope.previousData.equipement_id;
-				$scope.readEquipment($scope.previousEquipment);
-				$scope.measure.n_offset = $scope.calNOffset( $scope.measure.northing, $scope.previousData.utm_northing );
-				$scope.measure.e_offset = $scope.calEOffset( $scope.measure.easting, $scope.previousData.utm_easting );
-				$scope.measure.gps_offset_length = $scope.calGPSOffsetLength( $scope.measure.northing, $scope.measure.easting, $scope.previousData.utm_northing, $scope.previousData.utm_easting, $scope.measure.n_offset, $scope.measure.e_offset);				
-				$scope.measure.ch = $scope.calMappingCh( $scope.measure.n_offset, $scope.measure.gps_offset_length, $scope.previousData.mapping_ch );
+				$scope.readEquipment($scope.previousEquipment);				
 				$scope.addMarker( $scope.measurementList );
 				var keys = Object.keys($scope.previousData);
 				$scope.previousDataLength = keys.length
@@ -488,9 +495,9 @@ app.controller("projectsController", function( $scope, project , $location, meas
         $scope.measure.action = "add";
         
         $scope.measure.updatedDate = new Date();
+		console.log( $scope.measure);
 		setTimeout( function(){
-			measurements.commonFun( $scope.measure ).then( function( response ){
-				
+			measurements.commonFun( $scope.measure ).then( function( response ){				
 				$scope.measure = {};
 				$scope.loadMeasurements( $scope.project_id );
 				$scope.switchForm1 = true;

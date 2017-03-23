@@ -118,12 +118,40 @@
 														
 														<div class="col-md-12 col-xs-12 ">
 														<div class="" ng-show="addMeasurementHolder">
-															<div class="text-center" ng-init="open = true">
+															<div class="text-center" ng-init="openCo = true">
 																<label>Co-Ordinate Measurements
-																<i class="mdi mdi-arrow-down-bold-circle-outline" style="font-size: 20px;" ng-show='open' ng-click=" open = false; close = true "></i>
-																<i class="mdi mdi-arrow-up-bold-circle-outline" style="font-size: 20px; "ng-show='close' ng-click="open = true; close = false "></i></label>
+																<i class="mdi mdi-arrow-down-bold-circle-outline" style="font-size: 20px;" ng-show='openCo' ng-click=" openCo = false; closeCo = true "></i>
+																<i class="mdi mdi-arrow-up-bold-circle-outline" style="font-size: 20px; "ng-show='closeCo' ng-click="openCo = true; closeCo = false "></i></label>
 															</div>
-																<form style="overflow: hidden;" ng-show="close">
+																<form style="overflow: hidden;" ng-show="closeCo">
+																		<!--<div class="form-group col-sm-3 col-xs-6">
+																			<label>Latitude</label>
+																			<input 
+																				class="form-control input-sm" 
+																				type="text" 
+																				placeholder="Latitude"
+																				ng-model="measure.latitude"
+																				name="latitude"
+																				autocomplete="off"
+																				required
+																				id="lat"
+																				disabled
+																			>
+																		</div>
+																		<div class="form-group col-sm-3 col-xs-6">
+																			<label>Longitude</label>
+																			<input 
+																				class="form-control input-sm" 
+																				type="text" 
+																				placeholder="Longitude"
+																				ng-model="measure.longitude"
+																				name="longitude"
+																				autocomplete="off"
+																				required
+																				id="lng"
+																				disabled
+																			>
+																		</div>-->
 																		<div class="form-group col-sm-3 col-xs-6">
 																			<label>Latitude(D, M, S)</label>
 																			<input 

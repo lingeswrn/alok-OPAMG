@@ -68,6 +68,7 @@ if( !empty($_SESSION['COMMON_TOKEN'])){
         $input_measurement['other_photograph'] = $data->data->other_photograph;
         $input_measurement['created_date'] = date("Y-m-d H:i:s");
 		
+		
         if( empty( $input_project['id'] ) ){
             $add_measurement = $fun->InsertToTable('measurement',$input_measurement);
 			
@@ -230,11 +231,8 @@ if( !empty($_SESSION['COMMON_TOKEN'])){
 			equipments_list.owner, 
 			layers.code, 
 			layers.category, 
-			layers.description,
-			staff_readings.back_site,
-			staff_readings.forward_site,
-			staff_readings.intermediate_site
-			FROM measurement LEFT OUTER JOIN equipments_list ON equipments_list.id = measurement.equipement_id LEFT OUTER JOIN layers ON layers.code = measurement.layer_code LEFT OUTER JOIN staff_readings ON staff_readings.measurement_id = measurement.id WHERE measurement.project_id ='.$projectId.' AND measurement.status = "1" ' );
+			layers.description
+			FROM measurement LEFT OUTER JOIN equipments_list ON equipments_list.id = measurement.equipement_id LEFT OUTER JOIN layers ON layers.code = measurement.layer_code WHERE measurement.project_id ='.$projectId.' AND measurement.status = "1" ' );
             
 			for( $i=0; $i< count($measurements); $i++){
 				$gpsReadings = $fun->SelectFromTable('SELECT deg, min, sec, type FROM gps_coordinates WHERE measurement_id ='.$measurements[$i]['id']);
@@ -243,6 +241,13 @@ if( !empty($_SESSION['COMMON_TOKEN'])){
 					$measurements[$i][$type. 'Deg'] = $gpsReadings[$j]['deg'];
 					$measurements[$i][$type. 'Min'] = $gpsReadings[$j]['min'];
 					$measurements[$i][$type. 'Sec'] = $gpsReadings[$j]['sec'];					
+				}
+				
+				$staffReadings = $fun->SelectFromTable('SELECT * FROM staff_readings WHERE measurement_id ='.$measurements[$i]['id']);
+				for( $j=0; $j< count($staffReadings);$j++){
+					$measurements[$i]['back_site'] = $gpsReadings[$j]['back_site'];
+					$measurements[$i]['intermediate_site'] = $gpsReadings[$j]['intermediate_site'];
+					$measurements[$i]['forward_site'] = $gpsReadings[$j]['forward_site'];					
 				}
 				
 				$measurements[$i]['offset_result'] = $measurements[$i]['bs_offset'] + $measurements[$i]['is_offset'] + $measurements[$i]['fs_offset'];
