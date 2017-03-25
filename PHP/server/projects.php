@@ -15,7 +15,11 @@ $logToken = $logToken_array['login_token'];
 //if( !empty($_SESSION['COMMON_TOKEN'])){
     
     if( $action == "list" ){
-        $query = "SELECT * FROM projects WHERE status = '1' AND user_id='".$_SESSION['USER_ID']."' ORDER BY `id` DESC";
+        if( $_SESSION['USER_NAME'] == 'Admin')
+          $query = "SELECT * FROM projects WHERE status = '1' ORDER BY `id` DESC";
+        else
+           $query = "SELECT * FROM projects WHERE status = '1' AND user_id='".$_SESSION['USER_ID']."' ORDER BY `id` DESC";
+
         $qryw = $fun->SelectFromTable($query);
         
         $response = array(

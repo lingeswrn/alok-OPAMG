@@ -1,4 +1,4 @@
-app.controller("projectsController", function( $scope, project , $location, measurements, $compile, layers, equ, fileUpload){
+app.controller("projectsController", function( $scope, project , $location, measurements, $compile, layers, equ, fileUpload, $http){
     $scope.projectData = {};
 	$scope.projectId = '';
 	$scope.measure = {};
@@ -100,8 +100,8 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		if (navigator.geolocation) {
 			var myOptions = {
 				zoom: 13,
-				center: new google.maps.LatLng(23.366301, 85.304773),
-				mapTypeId: google.maps.MapTypeId.ROADMAP,
+				//center: new google.maps.LatLng(23.366301, 85.304773),
+				mapTypeId: 'satellite',
 				mapTypeControl: true,
 				mapTypeControlOptions: {
 					style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
@@ -118,6 +118,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
 				},
 				fullscreenControl: true
 			};
+			
 			map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 			var marker = new google.maps.Marker({
 				position: map.getCenter(),
@@ -125,26 +126,34 @@ app.controller("projectsController", function( $scope, project , $location, meas
 				map: map
 			});	
 		  navigator.geolocation.getCurrentPosition(function(position) {
-			/* var pos = {
+			 var pos = {
 			  lat: position.coords.latitude,
 			  lng: position.coords.longitude
-			}; */
-			var pos = {
-			  lat: 23.365040329263,
-			  lng: 85.345285084961
 			};
 			marker.setPosition(pos);
-			map.panTo(pos);
+			window.setTimeout(function() {
+				map.panTo(marker.getPosition());
+			  }, 1000);
+			//map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+			map.setZoom(19); 
 		  }, function() {
-			//handleLocationError(true, infoWindow, map.getCenter());
+				alert("Not getting location. Make sure you turn on your location.");
+				var pos = {
+			  lat: 23.366301,
+			  lng: 85.304773
+			};
+			marker.setPosition(pos);
+			window.setTimeout(function() {
+				map.panTo(marker.getPosition());
+			  }, 1000);
+			//map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+			map.setZoom(19); 
 		  });
 		
     
 		  // intercept map and marker movements
 		google.maps.event.addListener(map, "idle", function( res ) {
 			//marker.setPosition(map.getCenter());
-			console.log(map)
-			console.log(res)
 			//getCoOrdinates(map);
 			google.maps.event.trigger(map, "resize");
 		});
@@ -179,7 +188,6 @@ app.controller("projectsController", function( $scope, project , $location, meas
 	}    
     
 	function getCoOrdinates(res){
-		console.log(res)
 		var latitude = res.latLng.lat();
 		var longitude = res.latLng.lng();	
 
@@ -192,11 +200,18 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		$scope.measure.northing = $scope.value.northing;
 		$scope.measure.zone = $scope.value.zone;
 		
+                if( $scope.previousDataLength != 0 ){
 		$scope.measure.n_offset = $scope.calNOffset( $scope.measure.northing, $scope.previousData.utm_northing );
 		$scope.measure.e_offset = $scope.calEOffset( $scope.measure.easting, $scope.previousData.utm_easting );
 		$scope.measure.gps_offset_length = $scope.calGPSOffsetLength( $scope.measure.northing, $scope.measure.easting, $scope.previousData.utm_northing, $scope.previousData.utm_easting, $scope.measure.n_offset, $scope.measure.e_offset);				
 		$scope.measure.ch = $scope.calMappingCh( $scope.measure.n_offset, $scope.measure.gps_offset_length, $scope.previousData.mapping_ch );
 		$scope.$apply();
+                }else{
+                   $scope.measure.n_offset = 0;
+$scope.measure.e_offset =0;
+$scope.measure.gps_offset_length =0;
+$scope.measure.ch = 0;
+                 }
 	};
 	
 	$scope.addBasic = function( id ){
@@ -222,7 +237,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		}else{
 			returnData = 0;
 		}
-		return Math.round(returnData.toFixed(3));
+		return returnData.toFixed(3);
 	};
 	
 	$scope.calEOffset = function( currentEasting, previousEasting ){
@@ -233,13 +248,13 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		}else{
 			returnData = 0;
 		}
-		return Math.round(returnData.toFixed(3));
+		return returnData.toFixed(3);
 	};
 	
 	$scope.calGPSOffsetLength = function( currentNorthing, currentEasting, previousNorthing, previousEasting, currentNOffset, currentEOffset ){
 		var returnData;
 		
-		if( currentNOffset > 0 && currentEOffset > 0){
+		if( currentNorthing != 0 || currentEasting != 0){
 			returnData = Math.pow(Math.pow(( parseFloat(currentEasting) - parseFloat(previousEasting)),2) + Math.pow((parseFloat(currentNorthing) - parseFloat(previousNorthing)),2),0.5);
 		}else{
 			returnData = 0;
@@ -249,11 +264,11 @@ app.controller("projectsController", function( $scope, project , $location, meas
 	
 	$scope.calMappingCh = function( currentNOffset, currentGPSOffset, previousCH ){
 		var returnData;
-		if( currentNOffset > 0 ){
+		//if( currentNOffset > 0 ){
 			returnData = parseFloat(currentGPSOffset) + parseFloat(previousCH);
-		}else{
-			returnData = 0;
-		}
+		//}else{
+		//	returnData = 0;
+		//}
 		return returnData.toFixed(3);
 	};
 	
@@ -495,7 +510,6 @@ app.controller("projectsController", function( $scope, project , $location, meas
         $scope.measure.action = "add";
         
         $scope.measure.updatedDate = new Date();
-		console.log( $scope.measure);
 		setTimeout( function(){
 			measurements.commonFun( $scope.measure ).then( function( response ){				
 				$scope.measure = {};
@@ -510,8 +524,6 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		}, 1000);
 	};
     $scope.addMeasurement = function(){
-		console.log($scope.measure.equipmentId)
-		console.log($scope.layerString)
 		
 		if( $scope.layerString != undefined && $scope.measure.equipmentId != undefined ){
 			if( $scope.measure.tbm_rl == undefined ){
@@ -746,7 +758,14 @@ app.controller("projectsController", function( $scope, project , $location, meas
 }//close Geog to UTM
 
 
-	
+	$http.get('server/getSession.php').then( function( response ){
+		if( response.data.data.USER_NAME == 'Admin' ){
+			$scope.admin = true;
+		}else{
+			$scope.admin = false;
+		}
+		
+	});
 	
     $scope.project_list();
 	$scope.listLayers();

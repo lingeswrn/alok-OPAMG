@@ -1,178 +1,178 @@
-<div ng-include="'pages/sidebar.html'"></div>
-<div class="content-page">
-     <style>
-        .action-icons i {
-            font-size: 18px;
-            color: #2a323c;
-        }
-		
-		label{
-			font-size: 12px!important;
-		}
-    </style>   
-     <!-- Start content -->
-    <div class="content">
-
-        <div class="">
-            <div class="page-header-title">
-                <h4 class="page-title">Survey Mapping Layers</h4>
-            </div>
-        </div>
-
-        <div class="page-content-wrapper ">
-
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="panel panel-primary">
-
-                            <div class="panel-body">
-                                <div class="row">
-                                    <div class="col-sm-12 col-xs-12">
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="panel panel-primary">
-                                                    <div class="panel-body">
-                                                        <h4 class="m-b-30 m-t-0">Survey Mapping Layers</h4>														 
-                                                        <div class="row">
-                                                            <div class="col-xs-12 col-md-12 col-sm-12">
-																<a href="" class="pull-right btn btn-info" data-toggle="modal" data-target="#add-layer-modal">Add Layers</a>
-                                                                <div class="table-responsive">
-                                                                    <table class="table" id="users">
-                                                                        <thead>
-                                                                        <tr>
-                                                                            <th>#</th>
-                                                                            <th>Symble</th>
-                                                                            <th>Layer Code</th>
-                                                                            <th>Category</th>
-                                                                            <th>Description</th>
-                                                                            <th>Action</th>
-                                                                        </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                            <tr ng-repeat="val in usersList">
-                                                                                <td ng-bind="$index + 1"></td>
-                                                                                <td ng-bind="val.symble" style="background-color: #{{val.symble}}"></td>
-                                                                                <td ng-bind="val.code"></td>
-                                                                                <td ng-bind="val.category"></td>
-                                                                                <td ng-bind="val.description"></td>
-                                                                                <td>
-                                                                                    <a href=""><i class="ion-trash-a" ng-click="delete(val.id)"></i></a>&nbsp;
-                                                                                    <a href=""><i class="ion-edit" ng-click="edit(val)"></i></a>&nbsp;
-                                                                                </td>
-                                                                        </tr>
-                                                                        
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div> <!-- End row -->
-                                    </div>
-                                </div>
-                                <!-- end row -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- end row -->
-
-            </div><!-- container -->
-
-        </div> <!-- Page content Wrapper -->        
-        <div id="add-layer-modal" class="modal fade">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                        <h4 class="modal-title" id="custom-width-modalLabel">Add Layer</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="m-t-20">
-                            <form class="form-horizontal m-t-20" name="layerForm" ng-submit="addLayer()">
-							<p class="error">{{errorMessage}}</p>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <div class="col-xs-12">                                       
-										<input 
-											class="form-control" 
-											type="text" 
-											placeholder="SYMBLE"
-											ng-model="mappingLayer.symble"
-											name="symble"
-											autocomplete="off"
-											required
-										>
-                                        <div ng-messages="layerForm.symble.$error" ng-if="layerForm.symble.$dirty" >
-                                            <div ng-message="required" class="error">This field is required</div>
-                                        </div>
-                                    </div>
-                                </div>
-								<div class="form-group">
-                                    <div class="col-xs-12">                                       
-										<input 
-											class="form-control" 
-											type="text" 
-											placeholder="LAYER CODE"
-											ng-model="mappingLayer.code"
-											name="code"
-											autocomplete="off"
-											required
-										>
-                                        <div ng-messages="layerForm.code.$error" ng-if="layerForm.code.$dirty" >
-                                            <div ng-message="required" class="error">This field is required</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-xs-12">                                       
-										<input 
-											class="form-control" 
-											type="text" 
-											placeholder="CATEGORY OF LAYERS"
-											ng-model="mappingLayer.category"
-											name="category"
-											autocomplete="off"
-											required
-										>
-                                        <div ng-messages="layerForm.category.$error" ng-if="layerForm.category.$dirty" >
-                                            <div ng-message="required" class="error">This field is required</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-xs-12">                                       
-										<input 
-											class="form-control" 
-											type="text" 
-											placeholder="DESCRIPTION"
-											ng-model="mappingLayer.description"
-											name="description"
-											autocomplete="off"
-											required
-										>
-                                        <div ng-messages="layerForm.description.$error" ng-if="layerForm.description.$dirty" >
-                                            <div ng-message="required" class="error">This field is required</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group text-center m-t-40">
-                                    <div class="col-xs-12">
-                                        <button class="btn btn-primary btn-block btn-lg waves-effect waves-light" type="submit" ng-disabled="layerForm.$invalid">Add</button>
-                                    </div>
-                                </div>
-                            </div>
-                            </form>    
-                        </div>
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-            </div>
-        </div>
-                
-    </div> <!-- content -->
+<div ng-include="'pages/sidebar.html'"></div>
+<div class="content-page">
+     <style>
+        .action-icons i {
+            font-size: 18px;
+            color: #2a323c;
+        }
+		
+		label{
+			font-size: 12px!important;
+		}
+    </style>   
+     <!-- Start content -->
+    <div class="content">
+
+        <div class="">
+            <div class="page-header-title">
+                <h4 class="page-title">Survey Mapping Layers</h4>
+            </div>
+        </div>
+
+        <div class="page-content-wrapper ">
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="panel panel-primary">
+
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-sm-12 col-xs-12">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="panel panel-primary">
+                                                    <div class="panel-body">
+                                                        <h4 class="m-b-30 m-t-0">Survey Mapping Layers</h4>														 
+                                                        <div class="row">
+                                                            <div class="col-xs-12 col-md-12 col-sm-12">
+																<a href="" class="pull-right btn btn-info" data-toggle="modal" data-target="#add-layer-modal">Add Layers</a>
+                                                                <div class="table-responsive">
+                                                                    <table class="table" id="users">
+                                                                        <thead>
+                                                                        <tr>
+                                                                            <th>#</th>
+                                                                            <th>Symble</th>
+                                                                            <th>Layer Code</th>
+                                                                            <th>Category</th>
+                                                                            <th>Description</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr ng-repeat="val in usersList">
+                                                                                <td ng-bind="$index + 1"></td>
+                                                                                <td ng-bind="val.symble" style="background-color: #{{val.symble}}"></td>
+                                                                                <td ng-bind="val.code"></td>
+                                                                                <td ng-bind="val.category"></td>
+                                                                                <td ng-bind="val.description"></td>
+                                                                                <td>
+                                                                                    <a href=""><i class="ion-trash-a" ng-click="delete(val.id)"></i></a>&nbsp;
+                                                                                    <a href=""><i class="ion-edit" ng-click="edit(val)"></i></a>&nbsp;
+                                                                                </td>
+                                                                        </tr>
+                                                                        
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> <!-- End row -->
+                                    </div>
+                                </div>
+                                <!-- end row -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- end row -->
+
+            </div><!-- container -->
+
+        </div> <!-- Page content Wrapper -->        
+        <div id="add-layer-modal" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title" id="custom-width-modalLabel">Add Layer</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="m-t-20">
+                            <form class="form-horizontal m-t-20" name="layerForm" ng-submit="addLayer()">
+							<p class="error">{{errorMessage}}</p>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="col-xs-12">                                       
+										<input 
+											class="form-control" 
+											type="text" 
+											placeholder="SYMBLE"
+											ng-model="mappingLayer.symble"
+											name="symble"
+											autocomplete="off"
+											required
+										>
+                                        <div ng-messages="layerForm.symble.$error" ng-if="layerForm.symble.$dirty" >
+                                            <div ng-message="required" class="error">This field is required</div>
+                                        </div>
+                                    </div>
+                                </div>
+								<div class="form-group">
+                                    <div class="col-xs-12">                                       
+										<input 
+											class="form-control" 
+											type="text" 
+											placeholder="LAYER CODE"
+											ng-model="mappingLayer.code"
+											name="code"
+											autocomplete="off"
+											required
+										>
+                                        <div ng-messages="layerForm.code.$error" ng-if="layerForm.code.$dirty" >
+                                            <div ng-message="required" class="error">This field is required</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-xs-12">                                       
+										<input 
+											class="form-control" 
+											type="text" 
+											placeholder="CATEGORY OF LAYERS"
+											ng-model="mappingLayer.category"
+											name="category"
+											autocomplete="off"
+											required
+										>
+                                        <div ng-messages="layerForm.category.$error" ng-if="layerForm.category.$dirty" >
+                                            <div ng-message="required" class="error">This field is required</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-xs-12">                                       
+										<input 
+											class="form-control" 
+											type="text" 
+											placeholder="DESCRIPTION"
+											ng-model="mappingLayer.description"
+											name="description"
+											autocomplete="off"
+											required
+										>
+                                        <div ng-messages="layerForm.description.$error" ng-if="layerForm.description.$dirty" >
+                                            <div ng-message="required" class="error">This field is required</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group text-center m-t-40">
+                                    <div class="col-xs-12">
+                                        <button class="btn btn-primary btn-block btn-lg waves-effect waves-light" type="submit" ng-disabled="layerForm.$invalid">Add</button>
+                                    </div>
+                                </div>
+                            </div>
+                            </form>    
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+                
+    </div> <!-- content -->
 </div>

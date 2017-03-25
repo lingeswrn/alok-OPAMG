@@ -45,7 +45,7 @@
                                                     <div class="panel-body">
                                                         <h4 class="m-b-30 m-t-0">Projects List</h4>
 														<div ng-show="addMeasurementListHolder" class="pull-right">
-															<a href="" class="btn btn-sm btn-info" ng-click="exportToCSV()">Export to CSV</a>
+															<a href="" class="btn btn-sm btn-info" ng-click="exportToCSV()" ng-show="admin">Export to CSV</a>
 															<a href="" class="btn btn-sm btn-info" data-toggle="modal" data-target="#add-project-modal">Add Project</a>
 														</div>
                                                         <div class="row">
@@ -270,7 +270,7 @@
 																				ng-blur="calMeasurementCH()"
 																				required>
 																		</div>
-																		<div class='form-group col-sm-12'>
+																		<div class='form-group col-sm-12 clearfix' style="clear:both;">
 																			<angucomplete-alt id='members'placeholder='Search Layers *'pause='400'selected-object='layerString' remote-url='server/getLayers.php?s='remote-url-data-field='data'title-field='code'description-field='description'minlength='1'input-class='form-control input-sm form-control input-sm-small' ng-model='measure.layer_name' name="layers"/>
 																		</div>
 																		
@@ -436,13 +436,13 @@
 																			<div class="form-group col-md-3">
 																				<label>Close Photograph</label>
 																				<div class="file-upload">
-																					<input type="file" file-model="closeMyFile"/>
+																					<input type="file" file-model="closeMyFile" accept="image/*;capture=camera"/>
 																				</div>
 																			</div>
 																			<div class="form-group col-md-3">
 																				<label>Location Photograph</label>
 																				<div class="file-upload">
-																					<input type="file" file-model="LocationMyFile"/>
+																					<input type="file" file-model="LocationMyFile" accept="image/*;capture=camera"/>
 																				</div>
 																			</div>
 																			<div class="form-group col-md-3">

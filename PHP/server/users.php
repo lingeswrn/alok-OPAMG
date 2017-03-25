@@ -40,7 +40,7 @@ $logToken = $logToken_array['Login-Token'];
         $inputCorpAddress['pincode'] = $data->data->corppincode;
         $inputCorpAddress['district'] = $data->data->corpdistrict;
         
-        $query = "SELECT * FROM users WHERE `email_id` = '".$input['email_id']."' OR `mobile` = '".$input['mobile']."'";
+        $query = "SELECT * FROM users WHERE status = '1' AND (`email_id` = '".$input['email_id']."' OR `mobile` = '".$input['mobile']."') ";
         $qryw = $fun->SelectFromTable($query);
 
         
