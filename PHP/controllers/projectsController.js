@@ -187,6 +187,26 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		}
 	}    
     
+	$scope.moveNext = function(){
+		var marker = new google.maps.Marker({
+				position: map.getCenter(),
+				draggable: true,
+				map: map
+			});	
+		console.log(marker.getPosition());
+		var response = {};
+		console.log(marker.getPosition().lat())
+		response.latLng = marker.getPosition();
+		getCoOrdinates(response);
+							
+		if( $scope.previousDataLength != 0 )
+			$scope.first = true;
+		
+		$scope.switchForm1 = false;
+		$scope.switchForm2 = true;
+		$scope.measure.number = 1;
+		document.webkitCancelFullScreen();
+	}
 	function getCoOrdinates(res){
 		var latitude = res.latLng.lat();
 		var longitude = res.latLng.lng();	
@@ -205,7 +225,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		$scope.measure.e_offset = $scope.calEOffset( $scope.measure.easting, $scope.previousData.utm_easting );
 		$scope.measure.gps_offset_length = $scope.calGPSOffsetLength( $scope.measure.northing, $scope.measure.easting, $scope.previousData.utm_northing, $scope.previousData.utm_easting, $scope.measure.n_offset, $scope.measure.e_offset);				
 		$scope.measure.ch = $scope.calMappingCh( $scope.measure.n_offset, $scope.measure.gps_offset_length, $scope.previousData.mapping_ch );
-		$scope.$apply();
+		
                 }else{
                    $scope.measure.n_offset = 0;
 $scope.measure.e_offset =0;
