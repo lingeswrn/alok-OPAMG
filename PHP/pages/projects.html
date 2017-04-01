@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <div ng-include="'pages/sidebar.html'"></div>
 <div class="content-page">
      <style>
@@ -789,4 +790,793 @@
         </div><!-- /.modal -->
         
     </div> <!-- content -->
+=======
+<div ng-include="'pages/sidebar.html'"></div>
+<div class="content-page">
+     <style>
+        .action-icons i {
+            font-size: 18px;
+            color: #2a323c;
+        }
+		
+		label{
+			font-size: 10px!important;
+		}
+		:-webkit-full-screen, :fullscreen, :-ms-fullscreen, :-moz-full-screen {
+			position: fixed;
+			width: 100%;
+			height: 100%;
+			top: 0; 
+			background: none;
+		}
+		.panel-body {
+			padding: 9px 6px 2px 5px !important;
+		}
+    </style>   
+     <!-- Start content -->
+    <div class="content">
+
+        <div class="">
+            <div class="page-header-title">
+                <h4 class="page-title">Projects</h4>
+            </div>
+        </div>
+
+        <div class="page-content-wrapper ">
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="panel panel-primary">
+
+                            <div class="panel-body" ng-show="addMeasurementListHolder">
+                                <div class="row">
+                                    <div class="col-sm-12 col-xs-12">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="panel panel-primary">
+                                                    <div class="panel-body">
+                                                        <h4 class="m-b-30 m-t-0">Projects List</h4>
+														<div ng-show="addMeasurementListHolder" class="pull-right">
+															<a href="" class="btn btn-sm btn-info" ng-click="exportToCSV()" ng-show="admin">Export to CSV</a>
+															<a href="" class="btn btn-sm btn-info" data-toggle="modal" data-target="#add-project-modal">Add Project</a>
+														</div>
+                                                        <div class="row">
+                                                            <div class="col-xs-12">
+                                                                <div class="table-responsive">
+                                                                    <table class="table" id="projects">
+                                                                        <thead>
+                                                                        <tr>
+																			<th>Client ID</th>
+                                                                            <th>Name</th>
+                                                                            <th>Company Name</th>
+                                                                            <th>From</th>
+                                                                            <th>To</th>
+                                                                            <th>Work Order Number</th>
+                                                                            <th>Scope of Work ID No</th>
+                                                                            <th>Start Date & Time</th>
+                                                                            <th>Last Update Date & Time</th>
+                                                                            <th>Remarks</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr ng-repeat="val in projectsList">
+																				<td ng-bind="val.id"></td>
+                                                                                <td ng-bind="val.project_name"></td>
+                                                                                <td ng-bind="val.company_name"></td>
+                                                                                <td ng-bind="val._from"></td>
+                                                                                <td ng-bind="val._to"></td>                                           
+                                                                                <td ng-bind="val.work_order_number"></td>
+                                                                                <td ng-bind="val.scope_wrk"></td>
+                                                                                <td ng-bind="val.created_date"></td>
+                                                                                <td ng-bind="val.updated_date"></td>
+                                                                                <td ng-bind="val.remarks"></td>
+                                                                                <td>
+                                                                                    <a href=""><i class="ion-trash-a" ng-click="delete(val.id)"></i></a>&nbsp;
+                                                                                    <a href=""><i class="ion-edit" ng-click="edit(val)"></i></a>&nbsp;
+                                                                                    <a href="" ng-click="addBasic(val.id)"><i class="ion-plus-round"></i></a>&nbsp;
+                                                                                    <a href="#!/measurements/{{val.id}}"><i class="ion-ios7-download"></i></a>
+                                                                                </td>
+                                                                        </tr>
+                                                                        
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> <!-- End row -->
+                                    </div>
+                                </div>
+                                <!-- end row -->
+                            </div>
+							<div class="panel-body" ng-show="showMeasurements">
+                                <div class="row">
+                                    <div class="col-sm-12 col-xs-12">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="panel panel-primary">
+                                                    <div class="panel-body">
+														<div class="col-md-12 col-xs-12" style="margin-bottom: -19px;">
+															<div class="col-md-4 col-xs-4">
+																<h4 class="m-b-30 m-t-0">Add Measurment</h4>
+															</div>
+															<div class="col-md-4 col-xs-4">
+																<button type="button" class="btn btn-default waves-effect waves-light btn-sm" ng-click="cancelMeasurement()">Cancel Measurment</button>
+															</div>
+															<div class="col-md-4 col-xs-4">
+																<button type="button" class="btn btn-default waves-effect waves-light btn-sm" ng-click="moveNext()">Next Step</button>
+															</div>
+														</div>
+														
+														<div class="col-md-12 col-xs-12 ">
+														<div class="" ng-show="addMeasurementHolder">
+															<div class="text-center" ng-init="openCo = true">
+																<label>Co-Ordinate Measurements
+																<i class="mdi mdi-arrow-down-bold-circle-outline" style="font-size: 20px;" ng-show='openCo' ng-click=" openCo = false; closeCo = true "></i>
+																<i class="mdi mdi-arrow-up-bold-circle-outline" style="font-size: 20px; "ng-show='closeCo' ng-click="openCo = true; closeCo = false "></i></label>
+															</div>
+																<form style="overflow: hidden;" ng-show="closeCo">
+																		<!--<div class="form-group col-sm-3 col-xs-6">
+																			<label>Latitude</label>
+																			<input 
+																				class="form-control input-sm" 
+																				type="text" 
+																				placeholder="Latitude"
+																				ng-model="measure.latitude"
+																				name="latitude"
+																				autocomplete="off"
+																				required
+																				id="lat"
+																				disabled
+																			>
+																		</div>
+																		<div class="form-group col-sm-3 col-xs-6">
+																			<label>Longitude</label>
+																			<input 
+																				class="form-control input-sm" 
+																				type="text" 
+																				placeholder="Longitude"
+																				ng-model="measure.longitude"
+																				name="longitude"
+																				autocomplete="off"
+																				required
+																				id="lng"
+																				disabled
+																			>
+																		</div>-->
+																		<div class="form-group col-sm-3 col-xs-6">
+																			<label>Latitude(D, M, S)</label>
+																			<input 
+																				class="form-control input-sm" 
+																				type="text" 
+																				placeholder="Latitude"
+																				ng-model="measure.latitudeDMS"
+																				name="latitude"
+																				autocomplete="off"
+																				required
+																				id="lat"
+																				disabled
+																			>
+																		</div>
+																		<div class="form-group col-sm-3 col-xs-6">
+																			<label>Longitude(D, M, S)</label>
+																			<input 
+																				class="form-control input-sm" 
+																				type="text" 
+																				placeholder="Longitude"
+																				ng-model="measure.longitudeDMS"
+																				name="longitude"
+																				autocomplete="off"
+																				required
+																				id="lng"
+																				disabled
+																			>
+																		</div>
+																		<div class="form-group col-sm-3 col-xs-6">
+																			<label>Northing</label>
+																			<input 
+																				class="form-control input-sm" 
+																				type="text" 
+																				placeholder="Northing"
+																				ng-model="measure.northing"
+																				name="northing"
+																				autocomplete="off"
+																				required
+																				disabled
+																			>
+																		</div>
+																		<div class="form-group col-sm-3 col-xs-6">
+																			<label>Easting</label>
+																			<input 
+																				class="form-control input-sm" 
+																				type="text" 
+																				placeholder="Easting"
+																				ng-model="measure.easting"
+																				name="easting"
+																				autocomplete="off"
+																				required
+																				disabled
+																			>
+																		</div>	
+																</form>
+																<!--<a id="map_toggler">Change Map to Fullscreen</a>-->
+																<div class="col-md-12 col-xs-12 col-sm-12">
+																	<form name="opamgForm" ng-show="switchForm1">  
+																		<div id="map_canvas" style="height: 500px;position: relative;/* overflow: hidden; */"></div>
+																	</form>
+																</div>
+																<form name="opamgForm1" ng-show="switchForm2">
+																		<div class='form-group col-sm-3 col-xs-6'>
+																			<label>Mapping CH</label>
+																			<input 
+																				class='form-control input-sm' 
+																				ng-model='measure.ch' 
+																				placeholder='Mapping CH' 
+																				ng-disabled="first"
+																			>
+																		</div>
+																		<div class='form-group col-sm-3 col-xs-6'>
+																			<label>Measurment CH</label>
+																			<input 
+																				class='form-control input-sm' 
+																				ng-model='measure.measurement_ch' 
+																				placeholder='Measurment CH' 
+																				ng-disabled="first"
+																			>
+																		</div>
+																		<div class='form-group col-sm-3 col-xs-6'>
+																			<label>GPS Offset Length</label>
+																			<input 
+																				class='form-control input-sm' 
+																				ng-model='measure.gps_offset_length' 
+																				placeholder='GPS Offset Length' 
+																				ng-disabled="first"
+																			>
+																		</div>
+																		<div class='form-group col-sm-3 col-xs-6'>
+																			<label>N offset, E offset</label>
+																			<input 
+																				class='form-control input-sm' 
+																				ng-model='measure.n_offset' 
+																				placeholder="N offset"
+																				ng-disabled="first" style='height: 20px;'>
+																			<input
+																				class='form-control input-sm' 
+																				ng-model='measure.e_offset' 
+																				placeholder="E offset"
+																				ng-disabled="first" style='height: 19px;'>
+																		</div>
+																		<div class='form-group col-sm-6 col-xs-6'>
+																			<input 
+																				class='form-control input-sm'  
+																				ng-model='measure.lSection' 
+																				placeholder='L-Section Offset *'
+																				ng-blur="calMeasurementCH()"
+																				required>
+																		</div>
+																		<div class='form-group col-sm-6 col-xs-6'>
+																			<input 
+																				class='form-control input-sm'
+																				ng-model='measure.xSection' 
+																				placeholder='X-Section Offset *' 
+																				ng-blur="calMeasurementCH()"
+																				required>
+																		</div>
+																		<div class='form-group col-sm-12 clearfix' style="clear:both;">
+																			<angucomplete-alt id='members'placeholder='Search Layers *'pause='400'selected-object='layerString' remote-url='server/getLayers.php?s='remote-url-data-field='data'title-field='code'description-field='description'minlength='1'input-class='form-control input-sm form-control input-sm-small' ng-model='measure.layer_name' name="layers"/>
+																		</div>
+																		
+																		<div class='col-sm-12 col-xs-12'  ng-init="measure.number = 1">
+																			<div class='col-sm-4 col-xs-4'>
+																				<label>Site Count</label>
+																			</div>
+																			<div class='col-sm-4 col-xs-4'>
+																				<label><input type="radio" ng-model="measure.number" value="1" ng-checked="true">1</label>
+																			</div>
+																			<div class='col-sm-4 col-xs-4'>
+																				<label><input type="radio" ng-model="measure.number" value="3">3</label>
+																			</div>
+																		</div>
+																		
+																		<div class='form-group col-sm-4' ng-repeat=" i in [] | range:measure.number" style="position: inherit;">
+																			<input 
+																				class="form-control input-sm" 
+																				name="back_site" 
+																				placeholder='Back Site' 
+																				id="back_site_{{$index + 1}}"
+																				required>
+																		</div>
+																		<div class='form-group col-sm-4' ng-repeat=" i in [] | range:measure.number">
+																			<input 
+																				class='form-control input-sm'  
+																				id="intermediate_site_{{$index + 1}}"
+																				placeholder='Intermediate Site' 
+																				required>
+																		</div>
+																		<div class='form-group col-sm-4' ng-repeat=" i in [] | range:measure.number">
+																			<input 
+																				class='form-control input-sm' 
+																				name='fore_site' 
+																				id="fore_site_{{$index + 1}}"
+																				placeholder='Fore Site' 
+																				required>
+																		</div>
+																		<div class="text-center" ng-init="open = true">
+																			<label>USING EQUIPMENTS LIST & FEUTURES 
+																			<i class="mdi mdi-arrow-down-bold-circle-outline" style="font-size: 20px;" ng-show='open' ng-click=" open = false; close = true "></i>
+																			<i class="mdi mdi-arrow-up-bold-circle-outline" style="font-size: 20px; "ng-show='close' ng-click="open = true; close = false "></i></label>
+																		</div>
+																		<div ng-show="close">
+																			<div class="form-group col-md-4">
+																				<select class="form-control input-sm" ng-model="measure.equipment" ng-change="readEquipment(measure.equipment)">
+																					<option ng-repeat="val in equipmentList" value="{{val.id}}" ng-selected="val.id == previousEquipment">{{val.model_number}}</option>
+																				</select>
+																			</div>
+																			<div class="form-group col-md-4">
+																				<input 
+																					class="form-control input-sm" 
+																					type="text" 
+																					placeholder="LAST CALIBRATION SERVIVE CENTER"
+																					ng-model="equipment.last_calibration_service_center"
+																					autocomplete="off"
+																					ng-disabled="true"
+																				>
+																			</div>
+																			<div class="form-group col-md-4">
+																				<input 
+																					class="form-control input-sm" 
+																					type="text" 
+																					placeholder="EXPIRY DATE"
+																					ng-model="equipment.expiry_date"
+																					autocomplete="off"
+																					ng-disabled="true"
+																				>
+																			</div>
+																			<div class="form-group col-md-6">
+																				<input 
+																					class="form-control input-sm" 
+																					type="text" 
+																					placeholder="LEAST COUNT"
+																					ng-model="equipment.least_count"
+																					autocomplete="off"
+																					ng-disabled="true"
+																				>
+																			</div>
+																			<div class="form-group col-md-6">
+																				<input 
+																					class="form-control input-sm" 
+																					type="text" 
+																					placeholder="OWNER / INCHARGE"
+																					ng-model="equipment.owner"
+																					autocomplete="off"
+																					ng-disabled="true"
+																				>
+																			</div>
+																			
+																			<div class='form-group col-sm-6'>
+																				<input 
+																					class='form-control input-sm' 
+																					name='intermediate_site' 
+																					ng-model='measure.dgps' 
+																					placeholder='DGPS Filename'>
+																			</div>
+																			<div class='form-group col-sm-6'>
+																				<input 
+																					class='form-control input-sm' 
+																					name='intermediate_site' 
+																					ng-model='measure.el'									
+																					placeholder='EL'>
+																			</div>
+																			<div class="form-group col-md-4">
+																				<input 
+																					class="form-control input-sm" 
+																					type="text" 
+																					placeholder="Hight of Instrument"
+																					ng-model="measure.heightOfInstrument"
+																					autocomplete="off"
+																					disabled
+																				>
+																			</div>	
+																			<div class="form-group col-md-4">
+																				<input 
+																					class="form-control input-sm" 
+																					type="text" 
+																					placeholder="ADJ RL"
+																					ng-model="measure.adj_rl"
+																					autocomplete="off"
+																				>
+																			</div>	
+																			<div class="form-group col-md-4">
+																				<input 
+																					class="form-control input-sm" 
+																					type="text" 
+																					placeholder="TBM RL"
+																					ng-model="measure.tbm_rl"
+																					autocomplete="off"
+																				>
+																			</div>
+																			<div class="form-group col-md-12">
+																				<input 
+																					class="form-control input-sm" 
+																					type="text" 
+																					placeholder="Remarks"
+																					ng-model="measure.remarks"
+																					name="remarks"
+																					autocomplete="off"
+																				>
+																			</div>
+																			<div class="form-group col-md-6">
+																				<input 
+																					class="form-control input-sm" 
+																					type="text" 
+																					placeholder="BS Angle"
+																					ng-model="measure.bs_angle"
+																					name="remarks"
+																					autocomplete="off"
+																				>
+																			</div>
+																			<div class="form-group col-md-6">
+																				<input 
+																					class="form-control input-sm" 
+																					type="text" 
+																					placeholder="FS Angle"
+																					ng-model="measure.fs_angle"
+																					name="remarks"
+																					autocomplete="off"
+																				>
+																			</div>
+																			<div class="form-group col-md-3">
+																				<label>Close Photograph</label>
+																				<div class="file-upload">
+																					<input type="file" file-model="closeMyFile" accept="image/*;capture=camera"/>
+																				</div>
+																			</div>
+																			<div class="form-group col-md-3">
+																				<label>Location Photograph</label>
+																				<div class="file-upload">
+																					<input type="file" file-model="LocationMyFile" accept="image/*;capture=camera"/>
+																				</div>
+																			</div>
+																			<div class="form-group col-md-3">
+																				<label>Screen shot of location</label>
+																				<div class="file-upload">
+																					<input type="file" file-model="ScreenMyFile"/>
+																				</div>
+																			</div>
+																			<div class="form-group col-md-3">
+																				<label>Other Photograph</label>
+																				<div class="file-upload">
+																					<input type="file" file-model="OtherMyFile"/>
+																				</div>
+																			</div>
+																		</div>																		
+																		<div class="form-group col-md-6">
+																			<button type="button" class="btn btn-primary waves-effect waves-light" ng-disabled="opamgForm1.$invalid && layerString.title != '' " ng-click="addMeasurement()">Save changes</button>
+																		</div>
+																	</form>
+																	<div class="clearfix"></div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- end row -->
+            </div><!-- container -->
+
+        </div> <!-- Page content Wrapper -->
+        <div id="add-project-modal" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title" id="custom-width-modalLabel">Add Project</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="m-t-20">
+                            <h4 class="{{class}}">{{message}}</h4>
+                        <form class="" name="projectForm">
+                            <div class="form-group">
+                                <input 
+                                        class="form-control input-sm" 
+                                        type="text" 
+                                        placeholder="Company Name"
+                                        ng-model="projectData.pro_company_name"
+                                        name="pro_company_name"
+                                        autocomplete="off"
+                                        required
+                                >
+                                <div ng-messages="projectForm.pro_company_name.$error" ng-if="projectForm.pro_company_name.$dirty" >
+                                        <div ng-message="required" class="error">This field is required</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input 
+                                        class="form-control input-sm" 
+                                        type="text" 
+                                        placeholder="Project Name"
+                                        ng-model="projectData.pro_name"
+                                        name="pro_name"
+                                        autocomplete="off"
+                                        required
+                                >
+                                <div ng-messages="projectForm.pro_name.$error" ng-if="projectForm.pro_name.$dirty" >
+                                        <div ng-message="required" class="error">This field is required</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input 
+                                        class="form-control input-sm" 
+                                        type="text" 
+                                        placeholder="Work Order Number"
+                                        ng-model="projectData.work_order_number"
+                                        name="work_order_number"
+                                        autocomplete="off"
+                                        required
+                                >
+                                <div ng-messages="projectForm.work_order_number.$error" ng-if="projectForm.work_order_number.$dirty" >
+                                        <div ng-message="required" class="error">This field is required</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input 
+                                        class="form-control input-sm" 
+                                        type="text" 
+                                        placeholder="Scope of Work ID No"
+                                        ng-model="projectData.scope_of_wrk_id"
+                                        name="scope_of_wrk_id"
+                                        autocomplete="off"
+                                        required
+                                >
+                                <div ng-messages="projectForm.scope_of_wrk_id.$error" ng-if="projectForm.scope_of_wrk_id.$dirty" >
+                                        <div ng-message="required" class="error">This field is required</div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <input 
+                                        class="form-control input-sm" 
+                                        type="text" 
+                                        placeholder="From Place"
+                                        ng-model="projectData.pro_from"
+                                        name="pro_from"
+                                        autocomplete="off"
+                                        required
+                                >
+                                <div ng-messages="projectForm.pro_from.$error" ng-if="projectForm.pro_from.$dirty" >
+                                        <div ng-message="required" class="error">This field is required</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input 
+                                        class="form-control input-sm" 
+                                        type="text" 
+                                        placeholder="To Place"
+                                        ng-model="projectData.pro_to"
+                                        name="pro_to"
+                                        autocomplete="off"
+                                        required
+                                >
+                                <div ng-messages="projectForm.pro_to.$error" ng-if="projectForm.pro_to.$dirty" >
+                                        <div ng-message="required" class="error">This field is required</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input 
+                                        class="form-control input-sm" 
+                                        type="text" 
+                                        placeholder="Remarks"
+                                        ng-model="projectData.remarks"
+                                        name="remarks"
+                                        autocomplete="off"
+                                        required
+                                >
+                                <div ng-messages="projectForm.remarks.$error" ng-if="projectForm.remarks.$dirty" >
+                                        <div ng-message="required" class="error">This field is required</div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </form>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary waves-effect waves-light" ng-disabled="projectForm.$invalid" ng-click="addProject()">Save changes</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+		
+		<div id="show-measurements-modal" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title" id="custom-width-modalLabel">SUMMARY REPORT</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="col-md-12">
+							<table class="table table-bordered table-striped table-condensed">
+								<tr>
+									<th>Date</th>
+									<td>{{measureDataResponse.projectDate}}</td>
+								</tr>
+								<tr>
+									<th>Project Name</th>
+									<td>{{measureDataResponse.project_name}}</td>
+								</tr>
+								<tr>
+									<th>Employee ID</th>
+									<td>{{measureDataResponse.empID}}</td>
+								</tr>
+								<tr>
+									<th>Lattitude</th>
+									<td>{{measureDataResponse.lattitude}}</td>
+								</tr>
+								<tr>
+									<th>Longitude</th>
+									<td>{{measureDataResponse.longitude}}</td>
+								</tr>
+								<tr>
+									<th>N</th>
+									<td>{{measureDataResponse.utm_northing}}</td>
+								</tr>
+								<tr>
+									<th>E</th>
+									<td>{{measureDataResponse.utm_easting}}</td>
+								</tr>
+								<tr>
+									<th>Z</th>
+									<td>{{measureDataResponse.utm_zone}}</td>
+								</tr>
+								<tr>
+									<th>PT No.</th>
+									<td>{{$index + 1}}</td>
+								</tr>
+								<tr>
+									<th colspan="2" align="center" class="success text-center" >Auto Level</th>
+								</tr>
+								<tr>
+									<th>CH</th>
+									<td>{{measureDataResponse.mapping_ch}}</td>
+								</tr>
+								<tr>
+									<th>Offset</th>
+									<td>{{measureDataResponse.measurment_ch}}</td>
+								</tr>
+								<tr>
+									<th>BS</th>
+									<td>{{measureDataResponse.back_site}}</td>
+								</tr>
+								<tr>
+									<th>IS</th>
+									<td>{{measureDataResponse.intermediate_site}}</td>
+								</tr>
+								<tr>
+									<th>FS</th>
+									<td>{{measureDataResponse.forward_site}}</td>
+								</tr>
+								<tr>
+									<th>TBM RL</th>
+									<td>{{measureDataResponse.tbm_rl}}</td>
+								</tr>
+								<tr>
+									<th>Layer Code</th>
+									<td>{{measureDataResponse.layer_code}}</td>
+								</tr>
+								<tr>
+									<th>Category of Layer</th>
+									<td>{{measureDataResponse.category}}</td>
+								</tr>
+								<tr>
+									<th>Description</th>
+									<td>{{measureDataResponse.description}}</td>
+								</tr>
+								<tr>
+									<th>Remarks</th>
+									<td>{{measureDataResponse.remarks}}</td>
+								</tr>
+								<tr class="success">
+									<th colspan="2" align="center" class="success text-center">Reference Map</th>
+								</tr>
+								<tr>
+									<th>Lattitude</th>
+									<td>{{measureDataResponse.lattitude}}</td>
+								</tr>
+								<tr>
+									<th>Longitude</th>
+									<td>{{measureDataResponse.longitude}}</td>
+								</tr>
+								<tr>
+									<th>Zone</th>
+									<td>{{measureDataResponse.utm_zone}}</td>
+								</tr>
+								<tr>
+									<th>D</th>
+									<td>{{GPSDataResponseLat.deg}}</td>
+								</tr>
+								<tr>
+									<th>M</th>
+									<td>{{GPSDataResponseLat.min}}</td>
+								</tr>
+								<tr>
+									<th>S</th>
+									<td>{{GPSDataResponseLat.sec}}</td>
+								</tr>
+								<tr>
+									<th>D</th>
+									<td>{{GPSDataResponseLng.deg}}</td>
+								</tr>
+								<tr>
+									<th>M</th>
+									<td>{{GPSDataResponseLng.min}}</td>
+								</tr>
+								<tr>
+									<th>S</th>
+									<td>{{GPSDataResponseLng.sec}}</td>
+								</tr>
+								<tr>
+									<th>N</th>
+									<td>{{measureDataResponse.utm_northing}}</td>
+								</tr>
+								<tr>
+									<th>E</th>
+									<td>{{measureDataResponse.utm_easting}}</td>
+								</tr>
+								<tr>
+									<th>Z</th>
+									<td>{{measureDataResponse.el}}</td>
+								</tr>
+								<tr>
+									<th>Layer Code</th>
+									<td>{{measureDataResponse.layer_code}}</td>
+								</tr>
+								<tr class="success" >
+									<th colspan="2" align="center" class="success text-center">ETS Co-Ordinate Data</th>
+								</tr>
+								<tr>
+									<th>N</th>
+									<td></td>
+								</tr>
+								<tr>
+									<th>E</th>
+									<td></td>
+								</tr>
+								<tr>
+									<th>Z</th>
+									<td></td>
+								</tr>
+								<tr>
+									<th>Layer Code</th>
+									<td></td>
+								</tr>
+								<tr>
+									<th>Prism Pole. Height</th>
+									<td></td>
+								</tr>
+								<tr>
+									<th>Instrument Height</th>
+									<td></td>
+								</tr>
+							</table>
+						</div>
+						<div class="clearfix"></div>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        
+    </div> <!-- content -->
+>>>>>>> origin/master
 </div>
