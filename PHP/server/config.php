@@ -4,9 +4,9 @@ if ( is_session_started() === FALSE ) session_start();
 error_reporting(1);
 
 define('DB_SERVER','localhost');
-define('DB_USER','root');
-define('DB_PASS','root');
-define('DB_NAME','alok');
+define('DB_USER','alokmxbq_sona1');
+define('DB_PASS','SKCs}=4GV)6I');
+define('DB_NAME','alokmxbq_sona1');
 
 define('COMMON_TOKEN','c4ca4238a0b923820dcc509a6f75849b21232f297a57a5a743894a0e4a801fc3');
 function is_session_started()
