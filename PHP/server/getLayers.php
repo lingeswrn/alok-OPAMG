@@ -6,7 +6,7 @@ session_start();
 
 $fun = new DatabaseFunctions();
 
-$query = "SELECT code,description FROM layers WHERE status = '1' AND code LIKE '%".$_GET['s']."%'";
+$query = "SELECT CONCAT( code ,'--',description ) as code, description FROM layers WHERE status = '1' AND code LIKE '%".$_GET['s']."%'";
         $qryw = $fun->SelectFromTable($query);
         
         $response = array(

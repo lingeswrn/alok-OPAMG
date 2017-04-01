@@ -1,4 +1,4 @@
-var app = angular.module('myApp',['ngRoute', 'ngMessages', "angucomplete-alt"]);
+var app = angular.module('myApp',['ngRoute', 'ngMessages', "angucomplete-alt", "angular-table"]);
 
 app.config( function( $routeProvider ){
     
@@ -144,9 +144,8 @@ app.config( function( $routeProvider ){
             resolve:{
                 "check":function($location, $http, $routeParams){
                     $http.get('server/getSession.php').then( function( response ){
-                        if( response.data.code == 200 ){ 
-                            var id = $routeParams.id;
-                            $location.path('/measurements/'+id);
+                        if( response.data.code == 200 ){ 							setTimeout(function(){								 var id = $routeParams.id;								$location.path('/measurements/'+id);							},500);
+                           
                         }else{
                             $location.path('/');
                         }

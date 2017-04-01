@@ -186,9 +186,7 @@ if( !empty($_SESSION['COMMON_TOKEN'])){
 				'data' => array( 'measureData' => $measurements[0], 'gpsReadings' => $gpsReadings )
             );
     }else if( $action == "listMeasurementReport" ){       
-            $projectId = $data->data->id;
-
-           
+            $projectId = $data->data->id;
             $measurements = $fun->SelectFromTable( 'SELECT 
 			measurement.id, 
 			measurement.project_id, 
@@ -230,9 +228,9 @@ if( !empty($_SESSION['COMMON_TOKEN'])){
 			layers.code, 
 			layers.category, 
 			layers.description
-			FROM measurement LEFT OUTER JOIN equipments_list ON equipments_list.id = measurement.equipement_id LEFT OUTER JOIN layers ON layers.code = measurement.layer_code WHERE measurement.project_id ='.$projectId.' AND measurement.status = "1" ' );
+			FROM measurement LEFT OUTER JOIN equipments_list ON equipments_list.id = measurement.equipement_id LEFT OUTER JOIN layers ON layers.code = measurement.layer_code WHERE measurement.project_id ='.$projectId.' AND measurement.status = "1" AND layers.status = "1" ORDER BY measurement.id ASC' );
             
-			for( $i=0; $i< count($measurements); $i++){
+			for( $i=0; $i< count($measurements); $i++){				$index = $i + 1;				$measurements[$i]['index'] = $index;
 				$gpsReadings = $fun->SelectFromTable('SELECT deg, min, sec, type FROM gps_coordinates WHERE measurement_id ='.$measurements[$i]['id']);
 				for( $j=0; $j< count($gpsReadings);$j++){
 					$type = $gpsReadings[$j]['type'];
