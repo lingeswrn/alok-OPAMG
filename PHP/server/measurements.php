@@ -29,7 +29,7 @@ if( !empty($_SESSION['COMMON_TOKEN'])){
             'data' => array( 'list' => $qryw, 'previous' => $qryw[$last], 'project' => $proj)
         );
     }else if( $action == "add" ){
-        
+       
         $input_measurement['project_id'] = $data->data->id;
         $input_measurement['equipement_id'] = $data->data->equipmentId;
         $input_measurement['layer_code'] = $data->data->layer;
@@ -38,6 +38,9 @@ if( !empty($_SESSION['COMMON_TOKEN'])){
         $input_measurement['utm_zone'] = $data->data->zone;
         $input_measurement['utm_easting'] = $data->data->easting;
         $input_measurement['utm_northing'] = $data->data->northing;
+        $input_measurement['angle_redians'] = $data->data->angleRedians;
+        $input_measurement['cs_offset_e'] = $data->data->cs_offset_easting;
+        $input_measurement['cs_offset_n'] = $data->data->cs_offset_northing;
         $input_measurement['el'] = $data->data->el;
         $input_measurement['mapping_ch'] = $data->data->ch;
         $input_measurement['ch_by_auto_level'] = $data->data->chByAutoLevel;
@@ -132,6 +135,9 @@ if( !empty($_SESSION['COMMON_TOKEN'])){
 			measurement.utm_zone, 
 			measurement.utm_easting, 
 			measurement.utm_northing, 
+			measurement.angle_redians, 
+			measurement.cs_offset_e, 
+			measurement.cs_offset_n, 
 			measurement.el, 
 			measurement.mapping_ch,
 			measurement.ch_by_auto_level,
@@ -197,6 +203,9 @@ if( !empty($_SESSION['COMMON_TOKEN'])){
 			measurement.utm_zone, 
 			measurement.utm_easting, 
 			measurement.utm_northing, 
+			measurement.angle_redians, 
+			measurement.cs_offset_e, 
+			measurement.cs_offset_n, 
 			measurement.el, 
 			measurement.mapping_ch,
 			measurement.ch_by_auto_level,

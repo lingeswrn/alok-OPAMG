@@ -257,7 +257,7 @@
 																				placeholder="E offset"
 																				ng-disabled="first" style='height: 19px;'>
 																		</div>
-																		<div class='form-group col-sm-6 col-xs-6'>
+																		<div class='form-group col-sm-4 col-xs-4'>
 																			<input 
 																				class='form-control input-sm'  
 																				ng-model='measure.lSection' 
@@ -265,7 +265,7 @@
 																				ng-blur="calMeasurementCH()"
 																				required>
 																		</div>
-																		<div class='form-group col-sm-6 col-xs-6'>
+																		<div class='form-group col-sm-4 col-xs-4'>
 																			<input 
 																				class='form-control input-sm'
 																				ng-model='measure.xSection' 
@@ -273,6 +273,10 @@
 																				ng-blur="calMeasurementCH()"
 																				required>
 																		</div>
+																		<div class='form-group col-sm-4 col-xs-4'>
+																			<button class="btn btn-success btn-sm" ng-click="addSectionByChainage()" ng-show="first">Add</button>
+																		</div>
+																		
 																		<div class='form-group col-sm-12 clearfix' style="clear:both;">
 																			<angucomplete-alt id='members'placeholder='Search Layers *'pause='400'selected-object='layerString' remote-url='server/getLayers.php?s='remote-url-data-field='data'title-field='code'description-field='description'minlength='1'input-class='form-control input-sm form-control input-sm-small' ng-model='measure.layer_name' name="layers"/>
 																		</div>
@@ -465,6 +469,36 @@
 																			<button type="button" class="btn btn-primary waves-effect waves-light" ng-disabled="opamgForm1.$invalid && layerString.title != '' " ng-click="addMeasurement()">Save changes</button>
 																		</div>
 																	</form>
+																	<div class="col-md-12 col-sm-12 col-xs-12 " ng-show="switchForm3">
+																		<fieldset  data-ng-repeat="choice in choices" class="col-md-12">
+																			<div class="row" style="margin-bottom: 7px;">
+																				<div class="col-md-2 col-xs-6">
+																					<input type="text" ng-model="choice.chainage" class='form-control input-sm'placeholder="Chainage">
+																				</div>
+																				<div class="col-md-2 col-xs-6">
+																					<input type="text" ng-model="choice.offset" class='form-control input-sm'placeholder="Offset">
+																				</div>
+																				<div class="col-md-2 col-xs-6">
+																					<input type="text" ng-model="choice.is_reading" class='form-control input-sm' placeholder="IS Reading">
+																				</div>
+																				<div class='form-group col-md-2 col-xs-6 clearfix'>
+																					<angucomplete-alt id='members'placeholder='Search Layers *'pause='400'selected-object='choice.layersTitle' remote-url='server/getLayers.php?s='remote-url-data-field='data'title-field='code'description-field='description'minlength='1'input-class='form-control input-sm form-control input-sm-small' ng-model='measure.layer_name' name="layers" initial-value="choice.layers"/>
+																				</div>	
+																				<div class="col-md-2 col-xs-6">
+																					<input type="text" ng-model="choice.remarks" class='form-control input-sm' placeholder="Remarks">
+																				</div>	
+																				<div class="col-md-2 col-xs-6">
+																					<button class='btn btn-sm btn-primary' ng-show="$last" ng-click="removeChoice()">-</button>&nbsp;&nbsp;
+																					<button class='btn btn-sm btn-success' ng-show="$last" ng-click="addNewChoice()">+</button>
+																				</div>
+																			</div>
+																		</fieldset>
+																		
+																		<div class="col-md-3 form-group col-xs-3">
+																			<br>
+																			<button class="addfields btn btn-sm btn-success" ng-click="addtoLocal()">Add fields</button>
+																	   </div>
+																	</div>
 																	<div class="clearfix"></div>
 															</div>
 														</div>

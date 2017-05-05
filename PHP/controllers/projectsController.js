@@ -72,7 +72,48 @@ app.controller("projectsController", function( $scope, project , $location, meas
        $scope.projectData.client_id = data.client_id;
     }
 	
+	$scope.choices = [{id: 'choice1'}];
+  
+	  $scope.addNewChoice = function() {
+		var newItemNo = $scope.choices.length+1;
+		$scope.choices.push({'id':'choice'+newItemNo});
+	  };
+		
+	  $scope.removeChoice = function() {
+		var lastItem = $scope.choices.length-1;
+		$scope.choices.splice(lastItem);
+	  };
 	
+	$scope.addSectionByChainage = function(){		
+		$scope.cookieCheck = getCookie( $scope.project_id );
+		if( $scope.cookieCheck != "" )
+			$scope.choices = JSON.parse($scope.cookieCheck);
+		else
+			$scope.choices = [{id: 'choice1'}];
+		$scope.switchForm1 = false;
+		$scope.switchForm2 = false;
+		$scope.switchForm3 = true;
+	};
+	function getCookie(cname) {
+		var name = cname + "=";
+		var decodedCookie = decodeURIComponent(document.cookie);
+		var ca = decodedCookie.split(';');
+		for(var i = 0; i <ca.length; i++) {
+			var c = ca[i];
+			while (c.charAt(0) == ' ') {
+				c = c.substring(1);
+			}
+			if (c.indexOf(name) == 0) {
+				return c.substring(name.length, c.length);
+			}
+		}
+		return "";
+	}
+	$scope.cancelCH = function(){
+		$scope.switchForm1 = true;
+		$scope.switchForm2 = true;
+		$scope.switchForm3 = false;
+	};
 	
     function initialize_map() {
 		//geocoder = new google.maps.Geocoder();
@@ -204,6 +245,7 @@ app.controller("projectsController", function( $scope, project , $location, meas
 		
 		$scope.switchForm1 = false;
 		$scope.switchForm2 = true;
+		$scope.switchForm3 = false;
 		$scope.measure.number = 1;
 		document.webkitCancelFullScreen();
 	}
@@ -244,9 +286,9 @@ $scope.measure.ch = 0;
 		$scope.addMeasurementHolder = true;
 		$scope.addMeasurementListHolder = false;
 		$scope.showMeasurements = true;
-		
+		$scope.cookieCheck = getCookie( id );
 		$scope.loadMeasurements( id );
-        getGeolocation()    
+        getGeolocation();
 	}
 	
 	$scope.calNOffset = function( currentNorthing, previousNorthing ){
@@ -303,6 +345,7 @@ $scope.measure.ch = 0;
                 $scope.measure.gps_offset_length = 0;
                 $scope.measure.n_offset = 0;
                 $scope.measure.e_offset = 0;
+				$scope.measure.angleRedians = 0.000;
 				$scope.previousDataLength = 0;
             }else{
 				
@@ -501,7 +544,59 @@ $scope.measure.ch = 0;
 		$scope.measure.avgHeightOfInstrument = $scope.measure.heightOfInstrument - $scope.measure.checkedReduceLevel;
 		$scope.measure.adjustmentError = $scope.calAdjustmentError( $scope.measure.tbm_rl, $scope.measure.reduceLevel );
 	}
+	var count = 0;
+	$scope.calManualEntry = function( manual ){
+		
+		$scope.tempMeasure = manual;
+		$scope.tempMeasure.number 	= 1;
+		$scope.tempMeasure.bsOffset = 0.000;
+		$scope.tempMeasure.isOffset = $scope.calSiteOffset( $scope.tempMeasure.intermediateSite );
+		$scope.tempMeasure.fsOffset = 0.000;
+		
+		var isRead = parseFloat($scope.tempMeasure.intermediateSite[0]);
+		
+		var bsSumMean = {'sum': 0.000, 'mean': 0.000};
+		var isSumMean = {'sum': parseFloat(isRead.toFixed(3)), 'mean': parseFloat(isRead.toFixed(3))};
+		var fsSumMean = {'sum': 0.000, 'mean': 0.000};		
+		
+		$scope.tempMeasure.bsOffsetSum = bsSumMean.sum;
+		$scope.tempMeasure.bsOffsetMean = bsSumMean.mean;
+		$scope.tempMeasure.isOffsetSum = isSumMean.sum;
+		$scope.tempMeasure.isOffsetMean = isSumMean.mean;
+		$scope.tempMeasure.fsOffsetSum = fsSumMean.sum;
+		$scope.tempMeasure.fsOffsetMean = fsSumMean.mean;
+		
+		var bsRiseFall = $scope.calRiseFall( $scope.tempMeasure.bsOffsetMean, $scope.tempMeasure.fsOffsetMean );		
+		$scope.tempMeasure.risePlus = bsRiseFall.rise;
+		$scope.tempMeasure.fallMinus = bsRiseFall.fall;
+		
+		$scope.tempMeasure.chByAutoLevel = $scope.calChByAutoLevel( $scope.previousData.ch_by_auto_level, $scope.tempMeasure.bsOffset, $scope.tempMeasure.fsOffset );
+		$scope.tempMeasure.checkedReduceLevel = $scope.calCheckedReduceLevel( $scope.previousData.hight_of_instrument, $scope.tempMeasure.isOffsetMean, $scope.tempMeasure.fsOffsetMean );
+		$scope.tempMeasure.reduceLevel = $scope.calReduceLevel( $scope.previousData.hight_of_instrument, $scope.tempMeasure.isOffsetMean, $scope.tempMeasure.fsOffsetMean);
+		$scope.tempMeasure.heightOfInstrument = $scope.calheightOfInstrument( $scope.tempMeasure.checkedReduceLevel, $scope.tempMeasure.bsOffsetMean, $scope.tempMeasure.isOffsetMean);
+		$scope.tempMeasure.avgHeightOfInstrument = $scope.tempMeasure.heightOfInstrument - $scope.tempMeasure.checkedReduceLevel;
+		$scope.tempMeasure.adjustmentError = $scope.calAdjustmentError( $scope.tempMeasure.tbm_rl, $scope.tempMeasure.reduceLevel ); 
+		
+		$scope.tempMeasure.n_offset = $scope.calNOffset( $scope.tempMeasure.cs_offset_northing, $scope.previousData.utm_northing );
+		$scope.tempMeasure.e_offset = $scope.calEOffset( $scope.tempMeasure.cs_offset_easting, $scope.previousData.utm_easting );
+		$scope.tempMeasure.gps_offset_length = $scope.calGPSOffsetLength( $scope.tempMeasure.cs_offset_northing, $scope.tempMeasure.cs_offset_easting, $scope.previousData.utm_northing, $scope.previousData.utm_easting, $scope.tempMeasure.n_offset, $scope.tempMeasure.e_offset);				
+		$scope.tempMeasure.ch = $scope.calMappingCh( $scope.tempMeasure.n_offset, $scope.tempMeasure.gps_offset_length, $scope.previousData.mapping_ch );
+			if( $scope.tempMeasure.xSection > 0 ){
+				$scope.tempMeasure.measurement_ch = parseFloat($scope.previousData.measurment_ch);
+			}else{
+				$scope.tempMeasure.measurement_ch = parseFloat($scope.previousData.measurment_ch) + parseFloat($scope.tempMeasure.lSection)
+			}
+		console.log($scope.tempMeasure);
+		measurements.commonFun( $scope.tempMeasure ).then( function( response ){});
+		count++;
+		if( count == $scope.cookieData.length ){
+			document.cookie = $scope.project_id + '=;expires=';
+			count = 0;
+			$scope.confirmMeasurement();
+		}
+	}
 	$scope.confirmMeasurement = function(){
+		$scope.cookieCheck = getCookie( $scope.project_id );
 		var layerSplit = $scope.layerString.title.split("--");
 		$scope.measure.layer = layerSplit[0];
 		$scope.measure.id = $scope.project_id;
@@ -530,18 +625,78 @@ $scope.measure.ch = 0;
         $scope.measure.action = "add";
         
         $scope.measure.updatedDate = new Date();
-		setTimeout( function(){
-			measurements.commonFun( $scope.measure ).then( function( response ){				
-				$scope.measure = {};
-				$scope.loadMeasurements( $scope.project_id );
-				$scope.switchForm1 = true;
-				$scope.switchForm2 = false;
-				$scope.addMeasurementHolder = true;
-				$scope.addMeasurementListHolder = false;
-				getGeolocation();
-				$scope.project_list();
-			});
-		}, 1000);
+		//$scope.tempMeasure = $scope.measure;
+		if( $scope.cookieCheck == "" ){
+			if( $scope.measure.easting > 0 && $scope.measure.northing > 0){
+				$scope.measure.angleRedians = Math.atan(( parseFloat($scope.measure.northing) - parseFloat($scope.previousData.utm_northing) ) / ( parseFloat($scope.measure.easting) - parseFloat($scope.previousData.utm_easting) ))
+			}
+			$scope.measure.cs_offset_easting = $scope.measure.easting;
+			$scope.measure.cs_offset_northing = $scope.measure.northing;
+			
+			setTimeout( function(){
+				measurements.commonFun( $scope.measure ).then( function( response ){				
+					$scope.measure = {};
+					$scope.loadMeasurements( $scope.project_id );
+					$scope.switchForm1 = true;
+					$scope.switchForm2 = false;
+					$scope.addMeasurementHolder = true;
+					$scope.addMeasurementListHolder = false;
+					getGeolocation();
+					$scope.project_list();
+				});
+			}, 1000);
+		}else{
+			$scope.cookieData = JSON.parse($scope.cookieCheck);
+			
+			var manualLastEasting = (($scope.measure.easting * ($scope.cookieData[$scope.cookieData.length - 1].chainage - $scope.previousData.mapping_ch)) + (($scope.measure.ch - $scope.cookieData[$scope.cookieData.length - 1].chainage) * $scope.previousData.utm_easting))/( $scope.measure.ch - $scope.previousData.mapping_ch);
+			var manualLastNorthing = (($scope.measure.northing * ($scope.cookieData[$scope.cookieData.length - 1].chainage - $scope.previousData.mapping_ch)) + (($scope.measure.ch - $scope.cookieData[$scope.cookieData.length - 1].chainage) * $scope.previousData.utm_northing))/( $scope.measure.ch - $scope.previousData.mapping_ch);
+			
+			if( $scope.measure.easting > 0 && $scope.measure.northing > 0){
+				$scope.measure.angleRedians = Math.atan(( parseFloat($scope.measure.northing) - parseFloat(manualLastNorthing) ) / ( parseFloat($scope.measure.easting) - parseFloat(manualLastEasting) ))
+			}
+			
+			for( i=0; i< $scope.cookieData.length;i++){
+				var intgrate = [];
+				
+				$scope.min = {};
+				console.log($scope.measure)
+				var tempEasting = (($scope.measure.easting * ($scope.cookieData[i].chainage - $scope.previousData.mapping_ch)) + (($scope.measure.ch - $scope.cookieData[i].chainage) * $scope.previousData.utm_easting))/( $scope.measure.ch - $scope.previousData.mapping_ch);
+				var tempNorthing = (($scope.measure.northing * ($scope.cookieData[i].chainage - $scope.previousData.mapping_ch)) + (($scope.measure.ch - $scope.cookieData[i].chainage) * $scope.previousData.utm_northing))/( $scope.measure.ch - $scope.previousData.mapping_ch);
+				
+				intgrate.push($scope.cookieData[i].is_reading);
+				
+				// Easting
+				if( $scope.measure.angleRedians > 0 ){
+					$scope.min.cs_offset_easting = ( tempEasting + Math.sin($scope.measure.angleRedians) * $scope.cookieData[i].offset );
+				}else{
+					$scope.min.cs_offset_easting = ( tempEasting - Math.sin($scope.measure.angleRedians) * $scope.cookieData[i].offset );
+				}
+				
+				// Northing
+				if( $scope.measure.angleRedians > 0 ){
+					$scope.min.cs_offset_northing = ( tempNorthing - Math.cos($scope.measure.angleRedians) * $scope.cookieData[i].offset );
+				}else{
+					$scope.min.cs_offset_northing = ( tempNorthing + Math.cos($scope.measure.angleRedians) * $scope.cookieData[i].offset );
+				}
+				
+				// Angle Redians
+				$scope.min.action = "add";
+				$scope.min.angleRedians = $scope.measure.angleRedians;
+				$scope.min.lSection = $scope.cookieData[i].chainage;
+				$scope.min.xSection = $scope.cookieData[i].offset;
+				$scope.min.remarks = $scope.cookieData[i].remarks;
+				$scope.min.intermediateSite = intgrate;
+				$scope.min.equipmentId = $scope.previousData.equipement_id;
+				$scope.min.layer = $scope.cookieData[i].layers;
+				$scope.min.id = $scope.project_id;
+				console.log($scope.min.remarks);
+				$scope.calManualEntry( $scope.min );				
+				
+			}
+			/* console.log($scope.previousData)
+			console.log($scope.measure)
+			console.log(JSON.parse($scope.cookieCheck)); */
+		}
 	};
     $scope.addMeasurement = function(){
 		
@@ -562,6 +717,7 @@ $scope.measure.ch = 0;
 	$scope.cancelMeasurement = function(){
 		$scope.switchForm1 = false;
 		$scope.switchForm2 = true;
+		$scope.switchForm3 = false;
 		$scope.addMeasurementHolder = false;
 		$scope.addMeasurementListHolder = true;
 		$scope.showMeasurements = false;		
@@ -618,7 +774,29 @@ $scope.measure.ch = 0;
 		  elem.webkitRequestFullscreen();
 		}
 	});
-
+	
+	$scope.addtoLocal = function(){
+		var count = 0;
+		console.log($scope.choices);
+		for( i=0; i< $scope.choices.length; i++){
+			if( $scope.choices[i]['chainage'] != undefined && $scope.choices[i]['offset'] != undefined && $scope.choices[i]['is_reading'] != undefined ){
+				var splitLayers = $scope.choices[i]['layersTitle']['title'].split("--");
+				$scope.choices[i]['layers'] = splitLayers[0];
+				count++;
+			}
+		}
+		if( count == $scope.choices.length ){
+			var a = new Date();
+			a = new Date(a.getTime() +1000*60*60*24*7);
+			document.cookie = $scope.project_id+"="+ JSON.stringify($scope.choices) +'; expires='+a.toGMTString()+';';
+			$scope.switchForm1 = true;
+			$scope.switchForm2 = false;
+			$scope.switchForm3 = false;
+			getGeolocation();
+		}else
+			alert("Fill all the Fields");
+	};
+	
 	function DDtoDMS(){
 	//Input= xd(long) and yd(lat)
 	//Output = xdd xm xs (long) and ydd ym ys (lat)
