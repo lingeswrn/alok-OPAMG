@@ -8,5 +8,11 @@ switch($todo){
 		break;	
 	case 'projects':
 		include 'server/projects.php';
+		break;	
+	case 'equipments':
+		include 'server/test.php';
+		break;	
+	case 'layers':
+		include 'server/getLayers.php';
 		break;
 }
